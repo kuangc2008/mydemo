@@ -26,12 +26,6 @@ public class MainActivity extends Activity {
         }
     }
 
-    @Override
-    public boolean onCreateOptionsMenu(Menu menu) {
-        getMenuInflater().inflate(R.menu.main, menu);
-        return true;
-    }
-
     public static class MainFragment extends ListFragment {
         private PackageManager mPm;
         public MainFragment() {
