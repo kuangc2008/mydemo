@@ -1,5 +1,6 @@
 package com.example.demo.demo1.mergedCursor;
 
+import java.util.ArrayList;
 import java.util.zip.Inflater;
 
 import android.app.Activity;
@@ -11,6 +12,8 @@ import android.content.Context;
 import android.content.CursorLoader;
 import android.content.Loader;
 import android.database.Cursor;
+import android.database.MatrixCursor;
+import android.database.MergeCursor;
 import android.os.Bundle;
 import android.provider.ContactsContract;
 import android.provider.ContactsContract.CommonDataKinds.Phone;
@@ -64,14 +67,15 @@ public class MergerCursorActivity extends Activity {
         }
         @Override
         public void onLoadFinished(Loader<Cursor> loader, Cursor data) {
-            myAdapter.swapCursor(data);
+            Cursor cursor = mergedCursor(data);
+            myAdapter.swapCursor(cursor);
             Log.v("kc", "data.count-->" + data.getCount());
         }
         @Override
         public void onLoaderReset(Loader<Cursor> loader) {
             myAdapter.swapCursor(null);
         }
-      
+
         public class MyAdapter extends CursorAdapter {
 
             public MyAdapter(Context context) {
@@ -91,6 +95,30 @@ public class MergerCursorActivity extends Activity {
                 tv2.setText(cursor.getString(2));
             }
             
+        }
+
+        private Cursor mergedCursor(Cursor c) {
+            if(c == null) {
+                return null;
+            }
+            if(c instanceof MergeCursor) {
+                return c;
+            }
+            
+            MatrixCursor playCursor = new MatrixCursor(coloums);
+            ArrayList<Object> arrayList = new ArrayList<Object>();
+            arrayList.add(0);
+            arrayList.add("110");
+            arrayList.add("歌的电话");
+            playCursor.addRow(arrayList);
+            
+            arrayList = new ArrayList<Object>();
+            arrayList.add(0);
+            arrayList.add("119");
+            arrayList.add("救火电话");
+            playCursor.addRow(arrayList);
+            
+            return new MergeCursor(new Cursor[] {playCursor, c});
         }
 
     }
