@@ -8,8 +8,11 @@ import android.app.Activity;
 import android.app.Fragment;
 import android.app.FragmentTransaction;
 import android.app.ListFragment;
+import android.content.ComponentName;
 import android.content.Context;
+import android.content.Intent;
 import android.content.pm.PackageManager;
+import android.text.TextUtils;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.Menu;
@@ -28,9 +31,15 @@ public class MainActivity extends Activity {
         super.onCreate(savedInstanceState);
         if (savedInstanceState == null) {
             FragmentTransaction ft = getFragmentManager().beginTransaction();
-            ft.add(android.R.id.content, new MainFragment(), null);
+            ft.add(android.R.id.content, new MainFragment(), "ff");
             ft.commit();
         }
+    }
+    
+    @Override
+    public void onBackPressed() {
+        MainFragment fragment = (MainFragment) getFragmentManager().findFragmentById(android.R.id.content);
+        fragment.pressBack();
     }
 
     public static class MainFragment extends ListFragment {
@@ -66,20 +75,47 @@ public class MainActivity extends Activity {
             String nowPrefix = adapter.getPrefix();
             
             if(info.isLastPrefix(nowPrefix)) {
-                Log.v("kc", "startActivity");
+                
+                Intent intent = new Intent();
+                intent.setComponent(new ComponentName(info.getActivityInfo().packageName, 
+                        info.getActivityInfo().name));
+                startActivity(intent);
             } else {
-                String nextPre = info.getCurrentPrefix(nowPrefix);
-                adapter.setPrefix(nextPre);
-                adapter.setInfos(AllActivityManager.getInstance(getActivity()).getActivityList(nextPre));
-                adapter.notifyDataSetChanged();
+                String nextPre = info.getNextPrefix(nowPrefix);
+                refreshList(nextPre);
             }
         }
 
+        public void pressBack() {
+            String nowPrefix = adapter.getPrefix();
+            if(!TextUtils.isEmpty(nowPrefix)) {
+                String prefix = getPrePrefix(nowPrefix);
+                refreshList(prefix);
+            } else {
+                getActivity().finish();
+            }
+        }
+
+        private String getPrePrefix(String prefix) {
+            int lastCharacter = prefix.lastIndexOf('/');
+            if(lastCharacter == -1) {
+                return "";
+            }
+            return prefix.substring(0, lastCharacter);
+        }
         
+        private void refreshList(String prefix) {
+            adapter.setPrefix(prefix);
+            adapter.setInfos(AllActivityManager.getInstance(getActivity()).getActivityList(prefix));
+            adapter.notifyDataSetChanged();
+        }
+
         public class MainAdapter extends BaseAdapter {
             private LayoutInflater inflater = null;
             int layoutRes = 0;
             List<AppInfo> infos = null;
+            // the prefix don't contain the current show label. for exsample, 
+            // the content is c, and the prefix maybe a/b
             private String prefix = null;
             
             public MainAdapter(Context context, int layoutRes, List<AppInfo> infos) {

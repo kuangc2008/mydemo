@@ -38,7 +38,7 @@ public class AppInfo {
         return title;
     }
     
-    public String getCurrentPrefix(String prefix) {
+    public String getNextPrefix(String prefix) {
         if(prefix == null || prefix.equals("")) {
             return label.substring(0, label.indexOf('/'));
         }

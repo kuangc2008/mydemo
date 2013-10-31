@@ -26,14 +26,14 @@
         </activity>
 
         <activity android:name="com.example.demo.test.TestUseActivity"
-            android:label="test/test1">
+            android:label="test/hah1/hah2/TestUseActivity">
             <intent-filter>
                 <action android:name="com.example.demo.demoaction"/>
             </intent-filter>
         </activity>   
-            
+
         <activity android:name="com.example.demo.view.ViewTestActivity"
-            android:label="view/view1">
+            android:label="view/ViewTestActivity">
             <intent-filter>
                 <action android:name="com.example.demo.demoaction"/>
             </intent-filter>
