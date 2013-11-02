@@ -41,13 +41,30 @@
             </intent-filter>
         </activity>
 
-        <activity android:name="com.example.demo.demo1.mergedCursor.MergerCursorActivity"
+        <activity android:name="com.example.demo.Nov.MergerCursorActivity"
+            android:parentActivityName="com.example.demo.test.TestUseActivity"
             android:label="cursor/MergerCursorActivity">
             <intent-filter>
                 <action android:name="com.example.demo.demoaction"/>
             </intent-filter>
+            <meta-data
+		        android:name="android.support.PARENT_ACTIVITY"
+		        android:value="com.example.demo.test.TestUseActivity" />
         </activity>
-        
+
+        <activity android:name="com.example.demo.Nov.NotifyActivity"
+            android:label="view/notification">
+            <intent-filter>
+                <action android:name="com.example.demo.demoaction"/>
+            </intent-filter>
+        </activity>
+
+       <activity android:name="com.example.demo.Nov.MoreMessageActivity"
+            android:label="view/notification">
+       </activity>
+       
+       <service android:name="com.example.demo.Nov.MyService"
+           ></service>
     </application>
 
 </manifest>

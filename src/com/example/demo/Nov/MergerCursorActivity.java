@@ -1,4 +1,4 @@
-package com.example.demo.demo1.mergedCursor;
+package com.example.demo.Nov;
 
 import java.util.ArrayList;
 import java.util.zip.Inflater;
