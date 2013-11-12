@@ -65,6 +65,13 @@
        
        <service android:name="com.example.demo.Nov.MyService"
            ></service>
+       
+        <activity android:name="com.example.demo.view.VMViewActivity"
+            android:label="view/VMView">
+            <intent-filter>
+                <action android:name="com.example.demo.demoaction"/>
+            </intent-filter>
+        </activity>
     </application>
 
 </manifest>
