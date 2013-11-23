@@ -7,7 +7,7 @@
         android:name="android.test.InstrumentationTestRunner"
         android:targetPackage="com.example.demo" />
     <uses-sdk
-        android:minSdkVersion="11"
+        android:minSdkVersion="14"
         android:targetSdkVersion="17" />
     <uses-permission 
         android:name="android.permission.READ_CONTACTS"/>
@@ -80,6 +80,13 @@
                 <action android:name="com.example.demo.demoaction"/>
             </intent-filter>
         </activity>
+        <activity 
+            android:name="com.example.demo.view.CustomTestViewActivity"
+              android:label="view/curstomview1">
+            <intent-filter>
+                <action android:name="com.example.demo.demoaction"/>
+            </intent-filter>
+            </activity>
     </application>
 
 </manifest>
