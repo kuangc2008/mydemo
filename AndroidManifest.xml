@@ -101,6 +101,16 @@
                 <action android:name="com.example.demo.demoaction"/>
             </intent-filter>
             </activity>  
+            
+         
+         <activity 
+            android:name="com.example.demo.view.ClipVIewActivity"
+            android:hardwareAccelerated="false"
+              android:label="view/clipView">
+            <intent-filter>
+                <action android:name="com.example.demo.demoaction"/>
+            </intent-filter>
+            </activity>  
     </application>
 
 </manifest>
