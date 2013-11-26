@@ -3,10 +3,14 @@ package com.example.demo.view;
 
 import com.example.demo.R;
 
+import android.R.color;
 import android.content.Context;
 import android.content.res.TypedArray;
 import android.graphics.Canvas;
+import android.graphics.Color;
 import android.graphics.Paint;
+import android.graphics.Paint.FontMetrics;
+import android.graphics.Region.Op;
 import android.util.AttributeSet;
 import android.util.Log;
 import android.view.MotionEvent;
@@ -21,7 +25,6 @@ public class CustomTextView extends View {
     public CustomTextView(Context context, AttributeSet attrs) {
         super(context, attrs);
         initLabelView();
-
         TypedArray a = context.obtainStyledAttributes(attrs, R.styleable.CustomTextView);
         String text = a.getString(R.styleable.CustomTextView_text);
         if (text != null) {
@@ -118,7 +121,43 @@ public class CustomTextView extends View {
     protected void onDraw(Canvas canvas) {
         Log.v("kc", "onDraw");
         super.onDraw(canvas);
-        canvas.drawText(mText, getPaddingLeft(), getPaddingTop() - mAscent, mTextPaint);
+        canvas.drawColor(color.white);
+//        canvas.drawText(mText, getPaddingLeft(), getPaddingTop() - mAscent, mTextPaint);
+        
+        
+        int line = 100;
+        mTextPaint.setColor(Color.BLUE);
+        mTextPaint.setTextSize(80);
+        FontMetrics metrics = mTextPaint.getFontMetrics();
+        Log.v("kc", "mtricd-->" + "  a  " + metrics.ascent + "   d  " + metrics.descent + "   b " + 
+                metrics.bottom + "   t  " + metrics.top + "   end  " + metrics.leading);
+        canvas.drawLine(0, line, getWidth(), line, mTextPaint);
+        canvas.drawText("哈哈哈", 0, line, mTextPaint);
+        
+        mTextPaint.setColor(Color.GREEN);
+        canvas.drawLine(0, line + 100, getWidth(), line + 100, mTextPaint);
+        canvas.drawText("哈哈哈1", 0, line + 100 -  metrics.ascent, mTextPaint);
+        
+        
+        canvas.save();
+        canvas.translate(0, 300);
+        canvas.drawLine(0, 0, getWidth(), 0, mTextPaint);
+        canvas.drawText("哈哈哈2",0,  -  metrics.ascent, mTextPaint);
+        canvas.restore();
+        
+        canvas.save();
+        canvas.clipRect(0, 400, getWidth(), 600);
+        canvas.clipRect(20, 400, 40, 600, Op.DIFFERENCE);
+        canvas.drawColor(Color.WHITE);
+        canvas.drawLine(0, 420, getWidth(), 420, mTextPaint);
+        canvas.drawText("哈哈哈3",0, 420 -  metrics.ascent, mTextPaint);
+        canvas.restore();
+        
+        canvas.drawLine(0, 500, getWidth(), 500, mTextPaint);
+        canvas.drawText("啊嘎嘎个4", 0,  500- metrics.ascent, mTextPaint);
+//        canvas.drawText(mText,  0,-mTextPaint.ascent(), mTextPaint);
+//        canvas.drawText(mText, 0,  mTextPaint.descent() ,mTextPaint);
+//        canvas.drawText(mText, 0,  mTextPaint. ,mTextPaint);
     }
     
     @Override
