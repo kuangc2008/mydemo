@@ -129,6 +129,13 @@
             </intent-filter>
             </activity> 
        
+       <activity 
+            android:name="com.example.demo.view.ShapeDrawableActivity"
+              android:label="view/shapeDrawable">
+            <intent-filter>
+                <action android:name="com.example.demo.demoaction"/>
+            </intent-filter>
+            </activity> 
     </application>
 
 </manifest>
