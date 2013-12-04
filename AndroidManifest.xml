@@ -144,6 +144,15 @@
                 <action android:name="com.example.demo.demoaction"/>
             </intent-filter>
             </activity> 
+            
+       
+       <activity 
+            android:name="com.example.demo.view.ScrollViewActivity"
+              android:label="view/scrollview">
+            <intent-filter>
+                <action android:name="com.example.demo.demoaction"/>
+            </intent-filter>
+            </activity> 
     </application>
 
 </manifest>
