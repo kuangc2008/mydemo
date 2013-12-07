@@ -1,0 +1,39 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="#FFFF"
+    android:orientation="vertical" >
+    
+
+    <Button 
+        android:layout_width="fill_parent"
+        android:layout_height="50dp"
+        android:background="@drawable/shape_drawable"
+        />
+    
+    <Button 
+        android:layout_marginTop="40dp"
+        android:layout_width="fill_parent"
+        android:layout_height="50dp"
+        android:background="@drawable/shape_drawable2"
+        />
+    
+     <Button 
+        android:layout_marginTop="40dp"
+        android:layout_width="fill_parent"
+        android:layout_height="50dp"
+        android:background="@drawable/shape_drawable3"
+        android:gravity="left"
+        android:text="我的"
+        />
+     
+          <Button 
+        android:layout_marginTop="40dp"
+        android:layout_width="fill_parent"
+        android:layout_height="50dp"
+        android:background="@drawable/shape_drawable4"
+         android:text="我的2"
+          android:gravity="left"
+        />
+</LinearLayout>

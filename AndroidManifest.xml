@@ -153,6 +153,23 @@
                 <action android:name="com.example.demo.demoaction"/>
             </intent-filter>
             </activity> 
+
+       <activity 
+            android:name="com.example.demo.dec.Shape_Drawable_Activity"
+              android:label="dec/shape_drawable">
+            <intent-filter>
+                <action android:name="com.example.demo.demoaction"/>
+            </intent-filter>
+            </activity> 
+
+
+       <activity 
+            android:name="com.example.demo.dec.Xfermodes"
+              android:label="dec/Xfermodes">
+            <intent-filter>
+                <action android:name="com.example.demo.demoaction"/>
+            </intent-filter>
+            </activity> 
     </application>
 
 </manifest>
