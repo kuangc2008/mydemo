@@ -170,6 +170,21 @@
                 <action android:name="com.example.demo.demoaction"/>
             </intent-filter>
             </activity> 
+            
+       
+             <activity  android:name="com.example.demo.dec.SurfaceView1Activity"
+              android:label="dec/SurfaceView1Activity">
+            <intent-filter>
+                <action android:name="com.example.demo.demoaction"/>
+            </intent-filter>
+            </activity> 
+            
+             <activity  android:name="com.example.demo.dec.SurfaceView2Activity"
+              android:label="dec/SurfaceView2Activity">
+            <intent-filter>
+                <action android:name="com.example.demo.demoaction"/>
+            </intent-filter>
+            </activity> 
     </application>
 
 </manifest>
