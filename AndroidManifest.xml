@@ -185,6 +185,27 @@
                 <action android:name="com.example.demo.demoaction"/>
             </intent-filter>
             </activity> 
+            
+           <activity  android:name="com.example.demo.dec.SurfaceView3Activity"
+              android:label="dec/SurfaceView3Activity">
+            <intent-filter>
+                <action android:name="com.example.demo.demoaction"/>
+            </intent-filter>
+            </activity> 
+            
+            <activity  android:name="com.example.demo.dec.SurfaceView4Activity"
+              android:label="dec/SurfaceView4Activity">
+            <intent-filter>
+                <action android:name="com.example.demo.demoaction"/>
+            </intent-filter>
+            </activity> 
+            
+            <activity  android:name="com.example.demo.dec.SurfaceView5Activity"
+              android:label="dec/SurfaceView5Activity">
+            <intent-filter>
+                <action android:name="com.example.demo.demoaction"/>
+            </intent-filter>
+            </activity> 
     </application>
 
 </manifest>
