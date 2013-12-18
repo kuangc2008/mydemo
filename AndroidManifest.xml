@@ -206,6 +206,14 @@
                 <action android:name="com.example.demo.demoaction"/>
             </intent-filter>
             </activity> 
+            
+
+            <activity  android:name="com.example.demo.dec.GradientDrawable"
+              android:label="dec/gradient_drawable2">
+            <intent-filter>
+                <action android:name="com.example.demo.demoaction"/>
+            </intent-filter>
+            </activity> 
     </application>
 
 </manifest>
