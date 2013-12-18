@@ -214,6 +214,22 @@
                 <action android:name="com.example.demo.demoaction"/>
             </intent-filter>
             </activity> 
+            
+
+
+            <activity  android:name="com.example.demo.dec.SurfaceViewActivity21"
+              android:label="dec/surfaceview_21">
+            <intent-filter>
+                <action android:name="com.example.demo.demoaction"/>
+            </intent-filter>
+            </activity> 
+            
+           <activity  android:name="com.example.demo.dec.SurfaceViewActivity22"
+              android:label="dec/surfaceview_22">
+            <intent-filter>
+                <action android:name="com.example.demo.demoaction"/>
+            </intent-filter>
+            </activity> 
     </application>
 
 </manifest>
