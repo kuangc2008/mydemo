@@ -230,6 +230,14 @@
                 <action android:name="com.example.demo.demoaction"/>
             </intent-filter>
             </activity> 
+            
+           
+           <activity  android:name="com.example.demo.dec.DensityActivity"
+              android:label="dec/density">
+            <intent-filter>
+                <action android:name="com.example.demo.demoaction"/>
+            </intent-filter>
+          </activity> 
     </application>
 
 </manifest>
