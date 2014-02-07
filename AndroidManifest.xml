@@ -245,6 +245,14 @@
                 <action android:name="com.example.demo.demoaction"/>
             </intent-filter>
           </activity> 
+          
+          
+          <activity  android:name="com.example.demo.jan.ColorActivity"
+              android:label="jan/coloractivity">
+            <intent-filter>
+                <action android:name="com.example.demo.demoaction"/>
+            </intent-filter>
+          </activity> 
     </application>
 
 </manifest>
