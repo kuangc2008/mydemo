@@ -253,6 +253,13 @@
                 <action android:name="com.example.demo.demoaction"/>
             </intent-filter>
           </activity> 
+
+          <activity  android:name="com.example.demo.feb.AnimationSeeking"
+              android:label="feb/AnimationSeeking">
+            <intent-filter>
+                <action android:name="com.example.demo.demoaction"/>
+            </intent-filter>
+          </activity> 
     </application>
 
 </manifest>
