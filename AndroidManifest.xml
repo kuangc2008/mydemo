@@ -273,7 +273,14 @@
             <intent-filter>
                 <action android:name="com.example.demo.demoaction"/>
             </intent-filter>
-          </activity> 
+          </activity>
+
+          <activity  android:name="com.example.demo.feb.ReversingAnimation"
+              android:label="feb/ReversingAnimation">
+            <intent-filter>
+                <action android:name="com.example.demo.demoaction"/>
+            </intent-filter>
+          </activity>
     </application>
 
 </manifest>
