@@ -294,6 +294,12 @@
                 <action android:name="com.example.demo.demoaction"/>
             </intent-filter>
           </activity>
+          <activity  android:name="com.example.demo.feb.BouncingBalls"
+              android:label="feb/BouncingBalls">
+            <intent-filter>
+                <action android:name="com.example.demo.demoaction"/>
+            </intent-filter>
+          </activity>
     </application>
 
 </manifest>
