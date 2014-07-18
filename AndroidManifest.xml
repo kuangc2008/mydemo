@@ -336,6 +336,13 @@
                 <action android:name="com.example.demo.demoaction"/>
             </intent-filter>
         </activity>
+
+        <activity android:name="com.example.next_year2014._29_DrawView1Activity"
+            android:label="new/07/drawview">
+            <intent-filter>
+                <action android:name="com.example.demo.demoaction"/>
+            </intent-filter>
+        </activity>
     </application>
 
 </manifest>

@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="utf-8"?>
+
+<com.example.next_year2014.DrawLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:orientation="vertical" android:layout_width="match_parent"
+    android:paddingLeft="50dp"
+    android:paddingTop="50dp"
+    android:paddingBottom="50dp"
+    android:layout_height="match_parent">
+
+    <TextView
+        android:layout_width="100dp"
+        android:layout_height="100dp"
+        android:background="#F0F0"
+        android:text="haha"/>
+    <TextView
+        android:layout_width="100dp"
+        android:layout_height="100dp"
+        android:background="#F00F"/>
+</com.example.next_year2014.DrawLayout>
