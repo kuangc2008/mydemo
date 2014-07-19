@@ -37,6 +37,16 @@ public class DrawLayout extends LinearLayout{
         mDragView = getChildAt(0);
     }
 
+    boolean isEdgeTrackingEnable = false;
+    public void setDrawCatchView() {
+        if(!isEdgeTrackingEnable) {
+            mDragHelper.setEdgeTrackingEnabled(ViewDragHelper.EDGE_ALL);
+        } else {
+            mDragHelper.setEdgeTrackingEnabled(0);
+        }
+        isEdgeTrackingEnable = !isEdgeTrackingEnable;
+    }
+
     @Override
     public boolean onInterceptTouchEvent(MotionEvent ev) {
         final int action = MotionEventCompat.getActionMasked(ev);
@@ -80,6 +90,24 @@ public class DrawLayout extends LinearLayout{
         @Override
         public void onViewPositionChanged(View changedView, int left, int top, int dx, int dy) {
             invalidate();
+        }
+
+        @Override
+        public void onEdgeDragStarted(int edgeFlags, int pointerId) {
+            Log.v("kcc", "onEdgeDragStarted-->" + edgeFlags + "  pointerId-->" + pointerId);
+            super.onEdgeDragStarted(edgeFlags, pointerId);
+        }
+
+        @Override
+        public boolean onEdgeLock(int edgeFlags) {
+            Log.v("kcc", "onEdgeLock-->" + edgeFlags);
+            return super.onEdgeLock(edgeFlags);
+        }
+
+        @Override
+        public void onEdgeTouched(int edgeFlags, int pointerId) {
+            Log.v("kcc", "onEdgeTouched-->" + edgeFlags + "  pointerId-->" + pointerId);
+            super.onEdgeTouched(edgeFlags, pointerId);
         }
 
         @Override
