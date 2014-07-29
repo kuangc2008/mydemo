@@ -33,6 +33,19 @@
         android:layout_toRightOf="@+id/rotation_z"
         android:id="@+id/scaleY"/>
 
+    <Button
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="anima"
+        android:layout_toRightOf="@+id/scaleY"
+        android:id="@+id/animation_test"/>
+
+    <Button
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="老动画"
+        android:layout_below="@id/right_move"
+        android:id="@+id/animation_old"/>
 
     <ImageView
         android:layout_width="100dp"
