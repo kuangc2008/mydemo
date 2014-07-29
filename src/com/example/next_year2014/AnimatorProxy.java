@@ -4,6 +4,7 @@ import android.graphics.Camera;
 import android.graphics.Matrix;
 import android.graphics.RectF;
 import android.os.Build;
+import android.util.Log;
 import android.view.View;
 import android.view.animation.Animation;
 import android.view.animation.Transformation;
@@ -67,10 +68,11 @@ public final class AnimatorProxy extends Animation {
     }
     public void setAlpha(float alpha) {
         if (mAlpha != alpha) {
+            prepareForUpdate();
             mAlpha = alpha;
             View view = mView.get();
             if (view != null) {
-                view.invalidate();
+                invalidateAfterUpdate();
             }
         }
     }
@@ -323,6 +325,7 @@ public final class AnimatorProxy extends Animation {
 
     @Override
     protected void applyTransformation(float interpolatedTime, Transformation t) {
+        Log.v("kcc", "applyTransformation");
         View view = mView.get();
         if (view != null) {
             t.setAlpha(mAlpha);

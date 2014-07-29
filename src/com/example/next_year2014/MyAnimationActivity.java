@@ -87,7 +87,7 @@ public class MyAnimationActivity extends Activity implements View.OnClickListene
                 break;
             case R.id.alpha:
                 ap = AnimatorProxy.wrap(centerView);
-                centerView.startAnimation(ap);
+                ap.setAlpha(0.1f);
                 break;
 
         }
