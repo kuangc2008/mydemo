@@ -26,6 +26,7 @@ public class MyAnimationActivity extends Activity implements View.OnClickListene
         findViewById(R.id.scaleY).setOnClickListener(this);
         findViewById(R.id.animation_test).setOnClickListener(this);
         findViewById(R.id.animation_old).setOnClickListener(this);
+        findViewById(R.id.alpha).setOnClickListener(this);
         centerView  = findViewById(R.id.center);
         centerView.setOnClickListener(this);
 
@@ -84,6 +85,11 @@ public class MyAnimationActivity extends Activity implements View.OnClickListene
                 ta2.setDuration(4000);
                 centerView.startAnimation(ta2);
                 break;
+            case R.id.alpha:
+                ap = AnimatorProxy.wrap(centerView);
+                centerView.startAnimation(ap);
+                break;
+
         }
     }
 

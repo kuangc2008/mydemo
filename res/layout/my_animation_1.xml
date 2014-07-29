@@ -47,6 +47,14 @@
         android:layout_below="@id/right_move"
         android:id="@+id/animation_old"/>
 
+    <Button
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="老动画"
+        android:layout_below="@id/right_move"
+        android:layout_toRightOf="@+id/animation_old"
+        android:id="@+id/alpha"/>
+
     <ImageView
         android:layout_width="100dp"
         android:layout_height="100dp"
