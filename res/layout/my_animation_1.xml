@@ -18,11 +18,31 @@
         android:layout_toRightOf="@+id/right_move"
         android:id="@+id/rotation_x"/>
 
-    <View
+    <Button
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="z旋转"
+        android:layout_toRightOf="@+id/rotation_x"
+        android:id="@+id/rotation_z"/>
+
+
+    <Button
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="scaleY"
+        android:layout_toRightOf="@+id/rotation_z"
+        android:id="@+id/scaleY"/>
+
+
+    <ImageView
         android:layout_width="100dp"
         android:layout_height="100dp"
-        android:background="#F0FF"
+        android:background="@drawable/vumeter"
+        android:src="@drawable/fish"
         android:id="@+id/center"
+        android:padding="10dp"
         android:layout_centerInParent="true"
         />
+
+
 </RelativeLayout>
