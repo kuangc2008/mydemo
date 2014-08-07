@@ -9,4 +9,14 @@
         android:layout_height="wrap_content"
         android:text="是否root"
         android:id="@+id/root"/>
+
+
+
+    <Button
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="第二种实现"
+        android:id="@+id/root2"/>
+
+
 </LinearLayout>
