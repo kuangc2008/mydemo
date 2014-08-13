@@ -1,0 +1,61 @@
+<?xml version="1.0" encoding="utf-8"?>
+
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:orientation="vertical" android:layout_width="match_parent"
+    android:layout_height="match_parent">
+
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content">
+        <Button
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="大图"
+            android:id="@+id/large_image"/>
+        <Button
+            android:layout_toRightOf="@id/large_image"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="小图"
+            android:id="@+id/small_image"/>
+        <Button
+            android:layout_below="@id/large_image"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="scaleType1"
+            android:id="@+id/scaleTyp1"/>
+        <Button
+            android:layout_toRightOf="@id/scaleTyp1"
+            android:layout_alignTop="@id/scaleTyp1"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="scaleType2"
+            android:id="@+id/scaleTyp2"/>
+        <Button
+            android:layout_toRightOf="@id/scaleTyp2"
+            android:layout_alignTop="@id/scaleTyp1"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="scaleType3"
+            android:id="@+id/scaleTyp3"/>
+        <Button
+            android:layout_below="@id/scaleTyp3"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="scaleType4"
+            android:id="@+id/scaleTyp4"/>
+        <Button
+            android:layout_toRightOf="@id/scaleTyp4"
+            android:layout_alignTop="@id/scaleTyp4"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="scaleType5"
+            android:id="@+id/scaleTyp5"/>
+    </RelativeLayout>
+
+    <ImageView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_weight="1"
+        android:background="#3F00"/>
+</LinearLayout>

@@ -17,10 +17,12 @@ public class PackageUtils {
 
 
     public static final int install(Context context, String filePath) {
-        if(PackageUtils.isSystemApplication(context) || ShellUtils.checkRootPermission()) {
-            return installSilent(context, filePath);
-        }
-        return installNormal(context, filePath)? INSTALL_SUCCEEDED:INSTALL_FAILED_INVALID_URI;
+//        if(PackageUtils.isSystemApplication(context) || ShellUtils.checkRootPermission()) {
+            if (installSilent(context, filePath) != INSTALL_SUCCEEDED) {
+//        }
+                return installNormal(context, filePath) ? INSTALL_SUCCEEDED : INSTALL_FAILED_INVALID_URI;
+            }
+        return 0;
     }
 
     public static boolean installNormal(Context context, String filePath) {
@@ -83,7 +85,7 @@ public class PackageUtils {
     }
 
     private static String getInstallLocationParams() {
-        int location = getInstallLocation();
+        int location = APP_INSTALL_INTERNAL; //getInstallLocation();
         switch (location) {
             case APP_INSTALL_INTERNAL:
                 return "-f";
