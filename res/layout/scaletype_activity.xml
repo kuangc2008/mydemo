@@ -19,6 +19,12 @@
             android:text="小图"
             android:id="@+id/small_image"/>
         <Button
+            android:layout_toRightOf="@id/small_image"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="长图"
+            android:id="@+id/long_image"/>
+        <Button
             android:layout_below="@id/large_image"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
@@ -51,11 +57,41 @@
             android:layout_height="wrap_content"
             android:text="scaleType5"
             android:id="@+id/scaleTyp5"/>
+        <Button
+            android:layout_toRightOf="@id/scaleTyp5"
+            android:layout_alignTop="@id/scaleTyp4"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="scaleType6"
+            android:id="@+id/scaleTyp6"/>
+        <Button
+            android:layout_below="@id/scaleTyp4"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="scaleType7"
+            android:id="@+id/scaleTyp7"/>
+        <Button
+            android:layout_toRightOf="@id/scaleTyp7"
+            android:layout_alignTop="@id/scaleTyp7"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="scaleType8"
+            android:id="@+id/scaleTyp8"/>
+        <Button
+            android:layout_toRightOf="@id/scaleTyp8"
+            android:layout_alignTop="@id/scaleTyp8"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="scaleType9"
+            android:id="@+id/scaleTyp9"/>
     </RelativeLayout>
 
     <ImageView
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
+        android:src="@drawable/fish"
+        android:scaleType="fitXY"
+        android:id="@+id/imageview"
         android:layout_weight="1"
         android:background="#3F00"/>
 </LinearLayout>
