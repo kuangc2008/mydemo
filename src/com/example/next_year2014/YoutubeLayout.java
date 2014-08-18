@@ -90,7 +90,26 @@ public class YoutubeLayout extends ViewGroup {
                 break;
         }
 
-        return true;   //因为没有return true，所以一直点击没反应。 因为点击事件，让子控件拿走了。
+        return isHeaderViewUnder  && isViewHit(mHeaderView, (int) x, (int) y) || isViewHit(mDescView, (int) x, (int) y);   //因为没有return true，所以一直点击没反应。 因为点击事件，让子控件拿走了。
+    }
+
+    private boolean isViewHit(View view, int x, int y) {
+        int[] viewLocation = new int[2];
+        view.getLocationOnScreen(viewLocation);
+        int[] parentLocation = new int[2];
+        this.getLocationOnScreen(parentLocation);
+        int screenX = parentLocation[0] + x;
+        int screenY = parentLocation[1] + y;
+        return screenX >= viewLocation[0] && screenX < viewLocation[0] + view.getWidth() &&
+                screenY >= viewLocation[1] && screenY < viewLocation[1] + view.getHeight();
+    }
+
+    public void maximize() {
+        smoothSlideTo(0f);
+    }
+
+    public void minimize() {
+        smoothSlideTo(1f);
     }
 
     boolean smoothSlideTo(float slideOffset) {
@@ -127,7 +146,6 @@ public class YoutubeLayout extends ViewGroup {
         Log.v("kcc", "onLayout-->" + " t-->" + t + "   b-->" + b + "   getHeight-->" + getHeight()
                 +"  headderViewHeight-->" + mHeaderView.getHeight());
         mHeaderView.layout(0, mTop, r, mTop + mHeaderView.getMeasuredHeight());
-
         mDescView.layout(0, mTop + mHeaderView.getMeasuredHeight(), r, mTop + b);
     }
 

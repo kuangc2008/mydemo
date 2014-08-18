@@ -8,6 +8,7 @@ import android.widget.AdapterView;
 import android.widget.BaseAdapter;
 import android.widget.ListView;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.example.demo.R;
 
@@ -25,7 +26,9 @@ public class YoutubeActivity extends Activity{
         listView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-
+                Toast.makeText(getBaseContext(), "hehe", Toast.LENGTH_SHORT).show();
+                YoutubeLayout yl = (YoutubeLayout) findViewById(R.id.dragLayout);
+                yl.maximize();
             }
         });
 
