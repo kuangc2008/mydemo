@@ -101,6 +101,14 @@ public class TouchEventActivity extends Activity {
         public boolean onInterceptTouchEvent(MotionEvent ev) {
             return super.onInterceptTouchEvent(ev);
         }
+
+        @Override
+        public boolean dispatchTouchEvent(MotionEvent event) {
+            Log.v("kcc", "RootView dispatchTouchEvent return->" + true);
+            return true;
+//            return super.dispatchTouchEvent(event);
+
+        }
     }
 
 
@@ -122,10 +130,14 @@ public class TouchEventActivity extends Activity {
         @Override
         public boolean onTouchEvent(MotionEvent event) {
             Log.v("kcc", "View1 onTouchEvent return->" + onTouchEvent);
-            if(event.getAction() == MotionEvent.ACTION_MOVE) {
-                return false;
-            }
             return onTouchEvent;
+        }
+
+        @Override
+        public boolean dispatchTouchEvent(MotionEvent event) {
+            Log.v("kcc", "View1 dispatchTouchEvent return->" + false);
+            return false;
+//            return super.dispatchTouchEvent(event);
         }
     }
 
@@ -147,6 +159,13 @@ public class TouchEventActivity extends Activity {
         public boolean onTouchEvent(MotionEvent event) {
             Log.v("kcc", "View2 onTouchEvent return->" + onTouchEvent);
             return onTouchEvent;
+        }
+
+        @Override
+        public boolean dispatchTouchEvent(MotionEvent event) {
+            Log.v("kcc", "View2 dispatchTouchEvent return->" + false);
+            return false;
+//            return super.dispatchTouchEvent(event);
         }
     }
 

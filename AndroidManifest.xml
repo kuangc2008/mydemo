@@ -379,6 +379,13 @@
                 <action android:name="com.example.demo.demoaction"/>
             </intent-filter>
         </activity>
+
+        <activity android:name="com.example.next_year2014.ViewDragHelperDemo1"
+            android:label="new/08/ViewDragHelperDemo1">
+            <intent-filter>
+                <action android:name="com.example.demo.demoaction"/>
+            </intent-filter>
+        </activity>
     </application>
 
 </manifest>

@@ -1,0 +1,25 @@
+<?xml version="1.0" encoding="utf-8"?>
+
+<com.example.next_year2014.ViewDragHelperDragLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent">
+
+    <ImageView
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:id="@+id/child1"
+        android:src="@drawable/guide_page_last_content"/>
+
+    <ImageView
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:id="@+id/child2"
+        android:src="@drawable/guide_page_one_content"/>
+    <ImageView
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:id="@+id/child3"
+        android:src="@drawable/guide_page_two_content"/>
+
+</com.example.next_year2014.ViewDragHelperDragLayout>
