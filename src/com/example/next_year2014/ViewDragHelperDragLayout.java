@@ -10,6 +10,7 @@ import android.view.GestureDetector;
 import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.ViewTreeObserver;
 
 /**
  * 问题所在，是其中某个的caputre控件在移动，而并不是说，整个viewGroup在移动
@@ -18,12 +19,21 @@ public class ViewDragHelperDragLayout extends ViewGroup implements GestureDetect
     private ViewDragHelper mViewDragHelper = null;
     GestureDetectorCompat mGestureDC = null;
     ScrollerCompat mScrollerCompat = null;
+    private int mCloseEnough;
+    private static final int CLOSE_ENOUGH = 2; // dp
 
     public ViewDragHelperDragLayout(Context context, AttributeSet attrs) {
         super(context, attrs);
 //        mViewDragHelper = ViewDragHelper.create(this, 1f, new ViewDragHelperCallback());
         mGestureDC = new GestureDetectorCompat(getContext(), this);
         mScrollerCompat = ScrollerCompat.create(getContext());
+        this.getViewTreeObserver().addOnScrollChangedListener(new ViewTreeObserver.OnScrollChangedListener() {
+            @Override
+            public void onScrollChanged() {
+                Log.v("kcc", "getScrooller-->" + getScrollX());
+            }
+        });
+        mCloseEnough = (int) (CLOSE_ENOUGH * getResources().getDisplayMetrics().density);
     }
 
     @Override
@@ -34,6 +44,7 @@ public class ViewDragHelperDragLayout extends ViewGroup implements GestureDetect
         Log.w("kcc", "defautlWidht-->" + (defaultWidht) + "  height-->" + defaultHeight);
         setMeasuredDimension(defaultWidht * getChildCount(),
                 defaultHeight);
+
 
     }
 
@@ -47,10 +58,15 @@ public class ViewDragHelperDragLayout extends ViewGroup implements GestureDetect
         }
     }
 
+    boolean isDrag = false;
     @Override
     public boolean onInterceptTouchEvent(MotionEvent ev) {
 //        mViewDragHelper.shouldInterceptTouchEvent(ev);
-        return true;
+
+        if(ev.getAction() == MotionEvent.ACTION_DOWN ) {
+            return false;
+        }
+        return isDrag;
     }
 
     @Override
@@ -78,11 +94,9 @@ public class ViewDragHelperDragLayout extends ViewGroup implements GestureDetect
 
     @Override
     public void computeScroll() {
-        Log.w("kcc", "computeScroll-->" + isFlinger );
         if(mScrollerCompat.computeScrollOffset() ) {
             this.scrollTo(mScrollerCompat.getCurrX(), 0);
             postInvalidate();
-
             Log.w("kcc", "computeScroll-->" + mScrollerCompat.getCurrX() + " final->" + mScrollerCompat.getFinalX() );
 //            if(mScrollerCompat.getCurrX() == mScrollerCompat.getFinalX()) {
 //                mScrollerCompat.startScroll(getScrollX(), 0, getFinalPos() - getScrollX() ,0);
@@ -91,12 +105,14 @@ public class ViewDragHelperDragLayout extends ViewGroup implements GestureDetect
 //            }
         } else {
             if(isFlinger) {
-                Log.v("kcc", "isFing-->end-->" + getScrollX() + "  final-->" + getFinalPos());
-                                mScrollerCompat.startScroll(getScrollX(), 0, getFinalPos() - getScrollX() ,0);
+                Log.v("kcc", "flinger end-->" + getScrollX() + "  final-->" + getFinalPos());
+
+                if(getScrollX() % (getMeasuredWidth()/3) != 0) {
+                    mScrollerCompat.startScroll(getScrollX(), 0, getFinalPos() - getScrollX(), 0);
+                }
                 postInvalidate();
                 isFlinger = false;
             }
-            Log.v("kcc", "computeScroll-->2" );
 //            if(isMoveing) {
 //                mScrollerCompat.startScroll(getScrollX(), 0, getFinalPos() - getScrollX() ,0);
 //                postInvalidate();

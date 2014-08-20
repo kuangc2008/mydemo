@@ -16,10 +16,23 @@
         android:layout_height="match_parent"
         android:id="@+id/child2"
         android:src="@drawable/guide_page_one_content"/>
-    <ImageView
+
+    <FrameLayout
         android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:id="@+id/child3"
-        android:src="@drawable/guide_page_two_content"/>
+        android:layout_height="match_parent">
+
+        <ImageView
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:id="@+id/child3"
+            android:src="@drawable/guide_page_two_content"/>
+
+        <Button
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="Click me"
+            android:id="@+id/button"/>
+     </FrameLayout>
+
 
 </com.example.next_year2014.ViewDragHelperDragLayout>
