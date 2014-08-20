@@ -57,15 +57,15 @@ public class ViewDragHelperDragLayout extends ViewGroup implements GestureDetect
     public boolean onTouchEvent(MotionEvent event) {
 //        mViewDragHelper.processTouchEvent(event);
         Log.v("kcc", "onTouchEvent-->");
-        if(event.getAction() == MotionEvent.ACTION_CANCEL || event.getAction() == MotionEvent.ACTION_UP) {
-            mScrollerCompat.startScroll(getScrollX(), 0, getFinalPos() - getScrollX() ,0);
-            postInvalidate();
-            return true;
-//            if(!mGestureDC.onTouchEvent(event)) {
-//            }
-//            return true;
+        boolean result = mGestureDC.onTouchEvent(event);
+        if(!result) {
+            if(event.getAction() == MotionEvent.ACTION_CANCEL || event.getAction() == MotionEvent.ACTION_UP) {
+                mScrollerCompat.startScroll(getScrollX(), 0, getFinalPos() - getScrollX() ,0);
+                postInvalidate();
+                return true;
+            }
         }
-        return mGestureDC.onTouchEvent(event);
+        return result;
     }
 
     private int getFinalPos() {
@@ -74,16 +74,15 @@ public class ViewDragHelperDragLayout extends ViewGroup implements GestureDetect
         return p * oneWidht;
     }
 
-    private boolean isMoveing = false;
+    private boolean isFlinger = false;
 
     @Override
     public void computeScroll() {
-        Log.w("kcc", "computeScroll-->" + isMoveing );
+        Log.w("kcc", "computeScroll-->" + isFlinger );
         if(mScrollerCompat.computeScrollOffset() ) {
-            Log.v("kcc", "computeScroll-->1" );
             this.scrollTo(mScrollerCompat.getCurrX(), 0);
             postInvalidate();
-            isMoveing = true;
+
             Log.w("kcc", "computeScroll-->" + mScrollerCompat.getCurrX() + " final->" + mScrollerCompat.getFinalX() );
 //            if(mScrollerCompat.getCurrX() == mScrollerCompat.getFinalX()) {
 //                mScrollerCompat.startScroll(getScrollX(), 0, getFinalPos() - getScrollX() ,0);
@@ -91,6 +90,12 @@ public class ViewDragHelperDragLayout extends ViewGroup implements GestureDetect
 //                postInvalidate();
 //            }
         } else {
+            if(isFlinger) {
+                Log.v("kcc", "isFing-->end-->" + getScrollX() + "  final-->" + getFinalPos());
+                                mScrollerCompat.startScroll(getScrollX(), 0, getFinalPos() - getScrollX() ,0);
+                postInvalidate();
+                isFlinger = false;
+            }
             Log.v("kcc", "computeScroll-->2" );
 //            if(isMoveing) {
 //                mScrollerCompat.startScroll(getScrollX(), 0, getFinalPos() - getScrollX() ,0);
@@ -136,9 +141,21 @@ public class ViewDragHelperDragLayout extends ViewGroup implements GestureDetect
 
     @Override
     public boolean onFling(MotionEvent e1, MotionEvent e2, float velocityX, float velocityY) {
-        Log.e("kcc", "onFling");
-        mScrollerCompat.fling(getScrollX(), 0, (int)velocityX/4, 0, 0, getMeasuredWidth()/3, 0, 0);
+        if(velocityX > 0) {
+            // 从左向右滑
+         //   mScrollerCompat.fling(getScrollX(), 0, -(int)velocityX, - getMeasuredWidth()*2/3  + getScrollX(),  0, 0,  0, 0);
+            mScrollerCompat.fling(getScrollX(), 0, -(int)velocityX,0, 0 , getScrollX(), 0,  0);
+        } else {
+            //从右向左滑
+            //mScrollerCompat.fling(getScrollX(), 0, -(int)velocityX, 0,  0,  getMeasuredWidth()*2/3 - getScrollX(), 0,  0);
+            //startX :  startX+速度       min: 最小距离   max： 最大距离。
+            //先min（1, 3)  再max( o, 2)
+            mScrollerCompat.fling(getScrollX(), 0, -(int)velocityX, 0,  getScrollX(),  getMeasuredWidth()*2/3 , 0,  0);
+        }
+
+        Log.e("kcc", "onFling" + getScrollX() + "  final-->" + mScrollerCompat.getFinalX() + "  spped->" + velocityX);
         postInvalidate();
+        isFlinger = true;
         return true;
     }
 
