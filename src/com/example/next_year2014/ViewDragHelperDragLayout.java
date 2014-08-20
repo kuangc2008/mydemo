@@ -30,7 +30,7 @@ public class ViewDragHelperDragLayout extends ViewGroup implements GestureDetect
         this.getViewTreeObserver().addOnScrollChangedListener(new ViewTreeObserver.OnScrollChangedListener() {
             @Override
             public void onScrollChanged() {
-                Log.v("kcc", "getScrooller-->" + getScrollX());
+//                Log.v("kcc", "getScrooller-->" + getScrollX());
             }
         });
         mCloseEnough = (int) (CLOSE_ENOUGH * getResources().getDisplayMetrics().density);
@@ -59,12 +59,19 @@ public class ViewDragHelperDragLayout extends ViewGroup implements GestureDetect
     }
 
     boolean isDrag = false;
+    int pointDownX = 0;
     @Override
     public boolean onInterceptTouchEvent(MotionEvent ev) {
 //        mViewDragHelper.shouldInterceptTouchEvent(ev);
 
         if(ev.getAction() == MotionEvent.ACTION_DOWN ) {
+            pointDownX = (int) ev.getX();
             return false;
+        }
+        if( Math.abs(ev.getX() - pointDownX) > mCloseEnough ) {
+            ev.setAction(MotionEvent.ACTION_DOWN);
+            mGestureDC.onTouchEvent(ev);
+            return true;
         }
         return isDrag;
     }
@@ -72,7 +79,7 @@ public class ViewDragHelperDragLayout extends ViewGroup implements GestureDetect
     @Override
     public boolean onTouchEvent(MotionEvent event) {
 //        mViewDragHelper.processTouchEvent(event);
-        Log.v("kcc", "onTouchEvent-->");
+        Log.v("kcc", "onTouchEvent-->" + event.getAction());
         boolean result = mGestureDC.onTouchEvent(event);
         if(!result) {
             if(event.getAction() == MotionEvent.ACTION_CANCEL || event.getAction() == MotionEvent.ACTION_UP) {
@@ -139,7 +146,7 @@ public class ViewDragHelperDragLayout extends ViewGroup implements GestureDetect
 
     @Override
     public boolean onScroll(MotionEvent e1, MotionEvent e2, float distanceX, float distanceY) {
-        Log.e("kcc", "onScroll");
+        Log.e("kcc", "onScroll" + getScrollX() + "  distanceX->" + distanceX);
         if(getScrollX() + distanceX < 0) {
             this.scrollTo(0, 0);
         } else if( getScrollX() + distanceX > getMeasuredWidth() * 2/3 ) {
