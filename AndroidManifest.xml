@@ -400,6 +400,34 @@
                 <action android:name="com.example.demo.demoaction"/>
             </intent-filter>
         </activity>
+
+        <activity android:name="com.example.volley.Volley1"
+            android:label="09/volley1">
+            <intent-filter>
+                <action android:name="com.example.demo.demoaction"/>
+            </intent-filter>
+        </activity>
+
+        <activity android:name="com.example.volley.Volley2"
+            android:label="09/volley2">
+            <intent-filter>
+                <action android:name="com.example.demo.demoaction"/>
+            </intent-filter>
+        </activity>
+
+        <activity android:name="com.example.volley.Volley3"
+            android:label="09/volley3">
+            <intent-filter>
+                <action android:name="com.example.demo.demoaction"/>
+            </intent-filter>
+        </activity>
+
+        <activity android:name="com.example.volley.Volley4"
+            android:label="09/volley4">
+            <intent-filter>
+                <action android:name="com.example.demo.demoaction"/>
+            </intent-filter>
+        </activity>
     </application>
 
 </manifest>
