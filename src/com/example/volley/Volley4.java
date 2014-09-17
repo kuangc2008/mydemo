@@ -3,15 +3,11 @@ package com.example.volley;
 import android.app.Activity;
 import android.os.Bundle;
 import android.util.Log;
-import android.widget.ImageView;
 
-import com.android.volley.NetworkResponse;
 import com.android.volley.Response;
 import com.android.volley.VolleyError;
-import com.android.volley.toolbox.ImageLoader;
-import com.android.volley.toolbox.JsonRequest;
-import com.example.demo.R;
 import com.kc.volley.GesonRequest;
+import com.kc.volley.NetworkManager;
 
 import java.util.List;
 
@@ -36,7 +32,7 @@ public class Volley4 extends Activity{
                 Log.v("kcc", "error");
             }
         });
-        RequestManager.getInstance(this).addToRequestQueue(request);
+        NetworkManager.getInstance(this).addToRequestQueue(request);
     }
 
     private class VolleyBean {

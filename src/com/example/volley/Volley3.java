@@ -1,15 +1,13 @@
 package com.example.volley;
 
 import android.app.Activity;
-import android.graphics.Bitmap;
 import android.os.Bundle;
 import android.widget.ImageView;
 
-import com.android.volley.Response;
 import com.android.volley.VolleyError;
 import com.android.volley.toolbox.ImageLoader;
-import com.android.volley.toolbox.ImageRequest;
 import com.example.demo.R;
+import com.kc.volley.NetworkManager;
 
 /**
  * Created by kuangcheng on 2014/9/16.
@@ -72,7 +70,7 @@ public class Volley3 extends Activity{
         iv = new ImageView(this);
         setContentView(iv);
 
-        RequestManager.getInstance(this).loadImage(imageUrls[0], new ImageLoader.ImageListener() {
+        NetworkManager.getInstance(this).loadImage(imageUrls[0], new ImageLoader.ImageListener() {
             @Override
             public void onResponse(ImageLoader.ImageContainer response, boolean isImmediate) {
                 iv.setImageBitmap(response.getBitmap());

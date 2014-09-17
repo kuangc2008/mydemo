@@ -1,11 +1,9 @@
-package com.example.volley;
+package com.kc.volley;
 
 import android.content.Context;
 import android.graphics.Bitmap;
-import android.hardware.display.DisplayManager;
 import android.util.DisplayMetrics;
 import android.util.LruCache;
-import android.view.Display;
 
 import com.android.volley.Request;
 import com.android.volley.RequestQueue;
@@ -15,23 +13,23 @@ import com.android.volley.toolbox.Volley;
 /**
  * Created by kuangcheng on 2014/9/16.
  */
-public class RequestManager {
+public class NetworkManager {
     private RequestQueue mRequestQueue;
     private ImageLoader mImageLoader;
     private static Context mCtx;
-    private static RequestManager mInstance = null;
+    private static NetworkManager mInstance = null;
 
-    private RequestManager(Context context) {
+    private NetworkManager(Context context) {
         mCtx = context;
         mRequestQueue = getRequestQueue();
         mImageLoader = new ImageLoader(mRequestQueue, new LruBitmapCache(context));
     }
 
-    public static RequestManager getInstance(Context context) {
+    public static NetworkManager getInstance(Context context) {
         if(mInstance == null) {
-             synchronized (RequestManager.class) {
+             synchronized (NetworkManager.class) {
                 if(mInstance == null) {
-                    mInstance = new RequestManager(context);
+                    mInstance = new NetworkManager(context);
                 }
              }
         }
@@ -70,12 +68,12 @@ public class RequestManager {
         }
 
         public LruBitmapCache(Context ctx) {
-            this(getCacheSize(ctx));
+            this(getDefaultSize(ctx));
         }
 
         @Override
         protected int sizeOf(String key, Bitmap value) {
-            return value.getRowBytes() * value.getHeight();
+            return value.getRowBytes() * value.getHeight()/1024;
         }
 
         @Override
@@ -95,5 +93,12 @@ public class RequestManager {
         final int screehHeight = dm.heightPixels;
         final int screenBytes = screenWidth * screehHeight;
         return screenBytes *3;
+    }
+
+    public static int getDefaultSize(Context ctx) {
+        int maxMemory = (int ) ( Runtime.getRuntime ().maxMemory() / 1024);
+        final int cacheSize = maxMemory / 8 ;
+        return cacheSize;
+
     }
 }

@@ -9,6 +9,7 @@ import com.android.volley.Response;
 import com.android.volley.VolleyError;
 import com.android.volley.toolbox.ImageRequest;
 import com.example.demo.R;
+import com.kc.volley.NetworkManager;
 
 /**
  * Created by kuangcheng on 2014/9/16.
@@ -26,7 +27,7 @@ public class Volley2 extends Activity {
         iv = new ImageView(this);
         setContentView(iv);
 
-        RequestManager rm = RequestManager.getInstance(this);
+        NetworkManager rm = NetworkManager.getInstance(this);
         ImageRequest ir = new ImageRequest(imageUrls[0], new Response.Listener<Bitmap>() {
             @Override
             public void onResponse(Bitmap response) {
