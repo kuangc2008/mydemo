@@ -14,7 +14,7 @@ import java.util.List;
 /**
  * Created by kuangcheng on 2014/9/16.
  */
-public class Volley4 extends Activity{
+public class Volley4 extends Activity {
 
     private String url = "http://mbs.hao.360.cn/?c=config&v=6.0.0&m=useragent,seswitch";
 
@@ -50,3 +50,5 @@ public class Volley4 extends Activity{
         String prefix;
     }
 }
+
+
