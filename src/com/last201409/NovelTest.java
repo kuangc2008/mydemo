@@ -4,6 +4,7 @@ import android.app.Activity;
 import android.content.Intent;
 import android.net.Uri;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -41,6 +42,44 @@ public class NovelTest extends Activity{
         mAdapter = new MyAdapter();
         lv.setAdapter(mAdapter);
         setContentView(lv);
+
+
+        //  1  TEST
+        boolean isShow = true;
+        isShow |= false;
+        Log.v("kcc", "isShow-->" + isShow);
+
+
+        isShow = false;
+        isShow |= true;
+        Log.v("kcc", "isShow-->" + isShow);
+
+        isShow = false;
+        isShow |= false;
+        Log.v("kcc", "isShow-->" + isShow);
+
+
+        isShow = true;
+        isShow |= true;
+        Log.v("kcc", "isShow-->" + isShow);
+
+
+
+        // 2 test
+        Log.v("kcc", "2 test start");
+
+        BV(haha() + "haha");
+    }
+
+    private void BV(String message) {
+        if(true) {
+            return;
+        }
+    }
+
+    private String haha() {
+        Log.v("kcc", "haha");
+        return "haha";
     }
 
     class MyAdapter extends BaseAdapter {
