@@ -458,6 +458,13 @@
                 <action android:name="com.example.demo.demoaction"/>
             </intent-filter>
         </activity>
+
+        <activity android:name="com.example.volley.LVolley1"
+            android:label="09/LVolley1">
+            <intent-filter>
+                <action android:name="com.example.demo.demoaction"/>
+            </intent-filter>
+        </activity>
     </application>
 
 </manifest>
