@@ -69,6 +69,19 @@ public class NovelTest extends Activity{
         Log.v("kcc", "2 test start");
 
         BV(haha() + "haha");
+
+
+        // 2 test
+        Log.v("kcc", "3 test start");
+        String url = "https://api.flickr.com/services/rest";
+        Uri.Builder builder = Uri.parse(url).buildUpon();
+        builder.appendQueryParameter("api_key", "5e045abd4baba4bbcd866e1864ca9d7b"); //rest?api_key=5e045abd4baba4bbcd866e1864ca9d7b
+        builder.appendPath("wahha");  //rest/wahha?api_key=5e045abd4baba4bbcd866e1864ca9d7b
+        builder.appendPath("hehe");
+        builder.appendPath("长城");
+        builder.appendEncodedPath("中国");  ///rest/wahha/hehe/%E9%95%BF%E5%9F%8E/中国?api_key=5e045abd4baba4bbcd866e1864ca9d7b
+        Log.v("kcc", "url is" +  builder.build().toString());
+
     }
 
     private void BV(String message) {

@@ -9,7 +9,7 @@ import com.android.volley.Response;
 import com.android.volley.VolleyError;
 import com.android.volley.toolbox.ImageRequest;
 import com.example.demo.R;
-import com.kc.volley.NetworkManager;
+import com.kc.toolbox.NetworkManager;
 
 /**
  * Created by kuangcheng on 2014/9/16.

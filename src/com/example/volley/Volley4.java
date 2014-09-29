@@ -4,10 +4,11 @@ import android.app.Activity;
 import android.os.Bundle;
 import android.util.Log;
 
+import com.android.volley.Request;
 import com.android.volley.Response;
 import com.android.volley.VolleyError;
-import com.kc.volley.GesonRequest;
-import com.kc.volley.NetworkManager;
+import com.kc.toolbox.GsonRequest;
+import com.kc.toolbox.NetworkManager;
 
 import java.util.List;
 
@@ -21,7 +22,7 @@ public class Volley4 extends Activity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        GesonRequest<VolleyBean> request = new GesonRequest<VolleyBean>(url, VolleyBean.class, null, new Response.Listener<VolleyBean>() {
+        GsonRequest<VolleyBean> request = new GsonRequest<VolleyBean>(Request.Method.GET, url, VolleyBean.class, null, new Response.Listener<VolleyBean>() {
             @Override
             public void onResponse(VolleyBean response) {
                 Log.v("kcc", "response" + response);
