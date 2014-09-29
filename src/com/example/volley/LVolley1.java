@@ -154,7 +154,7 @@ public class LVolley1 extends Activity{
                         public void onErrorResponse(VolleyError error) {
                             iv.setImageResource(R.drawable.app_sample_code);
                         }
-                    }, 0, 0);
+                    }, iv.getWidth(), iv.getHeight());
                     iv.setTag(ic);
                 }
             }

@@ -18,6 +18,7 @@ package com.android.volley.toolbox;
 import android.content.Context;
 import android.text.TextUtils;
 import android.util.AttributeSet;
+import android.util.Log;
 import android.view.ViewGroup.LayoutParams;
 import android.widget.ImageView;
 
@@ -146,6 +147,7 @@ public class NetworkImageView extends ImageView {
 
         // The pre-existing content of this view didn't match the current URL. Load the new image
         // from the network.
+        Log.w("kcc", "begin load");
         ImageContainer newContainer = mImageLoader.get(mUrl,
                 new ImageListener() {
                     @Override
@@ -170,7 +172,7 @@ public class NetworkImageView extends ImageView {
                             });
                             return;
                         }
-
+                        Log.w("kcc", "load end");
                         if (response.getBitmap() != null) {
                             setImageBitmap(response.getBitmap());
                         } else if (mDefaultImageId != 0) {
