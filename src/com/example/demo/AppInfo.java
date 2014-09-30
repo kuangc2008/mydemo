@@ -26,13 +26,20 @@ public class AppInfo {
      */
     public String getTitle(String prefix) {
         if(prefix == null || prefix.equals("")) {
-            return label.substring(0, label.indexOf('/'));
+            if(label.indexOf('/') != -1) {
+                return label.substring(0, label.indexOf('/'));
+            } else {
+                return label;
+            }
         }
         
         String title = null;
         if(isPrefix(prefix)) {
             int end = label.indexOf('/', prefix.length()+1);
-            end = ( end == -1 ? label.length() : end);
+            if(end == -1) {
+                return label;
+            }
+            end = ( end == -1 ? label.length()  : end);
             title = (String) label.subSequence(prefix.length()+1, end);
         }
         return title;
@@ -40,7 +47,11 @@ public class AppInfo {
     
     public String getNextPrefix(String prefix) {
         if(prefix == null || prefix.equals("")) {
-            return label.substring(0, label.indexOf('/'));
+            if( label.indexOf('/') != -1) {
+                return label.substring(0, label.indexOf('/'));
+            } else {
+                return label;
+            }
         }
         
         String currentPre = null;
@@ -60,9 +71,9 @@ public class AppInfo {
     }
     
     public boolean isLastPrefix(String prefix) {
-        if(prefix == null || prefix.equals("")) {
-            return false;
-        }
+//        if(prefix == null || prefix.equals("")) {
+//            return false;
+//        }
         
         int end = label.indexOf('/', prefix.length()+1);
         return end == -1;
