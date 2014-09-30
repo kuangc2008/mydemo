@@ -4,6 +4,7 @@ import android.app.Activity;
 import android.content.Context;
 import android.os.Parcel;
 import android.provider.CalendarContract;
+import android.text.TextUtils;
 
 import com.example.demo.R;
 import com.utils.FileUtils;
@@ -11,7 +12,11 @@ import com.utils.ParcelUtils;
 import com.utils.PreferenceUtils;
 import com.utils.TimeUtils;
 
+import org.w3c.dom.Text;
+
 import java.io.File;
+import java.io.FileInputStream;
+import java.io.FileNotFoundException;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Random;
@@ -20,13 +25,19 @@ import java.util.Random;
  * Created by kuangcheng on 2014/9/30.
  */
 public class YinXiangManager {
-    private static final String fileName = null;
+    public static final int REFRESH_MAX_TIME = 1;
 
     public static List<YinXiangNote> getNoteList(Context context) {
         List notes = new ArrayList();
 
-        String titlesStr = FileUtils.getStringFromRawFile(context, R.raw.names);
-        String urlsStr = FileUtils.getStringFromRawFile(context, R.raw.urls);
+        String titlesStr = null;
+        String urlsStr = null;
+        titlesStr = getStringFromLocal(context,YinXinagDownloadMng.getDownloadTitlePath());
+        urlsStr = getStringFromLocal(context,YinXinagDownloadMng.getDownloadUrlPath());
+        if(TextUtils.isEmpty(titlesStr) || TextUtils.isEmpty(urlsStr)) {
+            titlesStr = FileUtils.getStringFromRawFile(context, context.getResources().openRawResource(R.raw.names));
+            urlsStr = FileUtils.getStringFromRawFile(context, context.getResources().openRawResource(R.raw.urls));
+        }
 
         String[] titles = titlesStr.split("\n");
         String[] urls = urlsStr.split("\n");
@@ -40,15 +51,33 @@ public class YinXiangManager {
         return notes;
     }
 
-    public static List<YinXiangNote> getRandomNoteList(Context context) {
-        return getRandomNoteList(context, 8 , 15);
+    private static String getStringFromLocal(Context context, String path) {
+        String titlesStr = null;
+        if(PreferenceUtils.getInstance().getYinXinagVersionSuccess()) {
+            try {
+                FileInputStream inputStream = new FileInputStream(path);
+                titlesStr = FileUtils.getStringFromRawFile(context, inputStream);
+            } catch (FileNotFoundException e) {
+                e.printStackTrace();
+            }
+        }
+        return titlesStr;
     }
 
-    public static List<YinXiangNote> getRandomNoteList(Context context, int minSize, int maxSize) {
+
+    public static List<YinXiangNote> getRandomNoteList(Context context, boolean isRefresh) {
+        return getRandomNoteList(context, isRefresh, 7 , 20);
+    }
+
+    public static List<YinXiangNote> getRandomNoteList(Context context) {
+        return getRandomNoteList(context, false);
+    }
+
+    public static List<YinXiangNote> getRandomNoteList(Context context, boolean isRefresh, int minSize, int maxSize) {
         long oldSaveTime = PreferenceUtils.getInstance().getYinXiangTime();
         long now = System.currentTimeMillis();
         List<YinXiangNote> showNotes = new ArrayList<YinXiangNote>();
-        if (TimeUtils.getDay(oldSaveTime)  ==  TimeUtils.getDay(now)) {
+        if (!isRefresh && TimeUtils.getDay(oldSaveTime)  ==  TimeUtils.getDay(now)) {
             File file = new File(context.getFilesDir(), "notes");
             byte[] bytes = FileUtils.fileToByteArray(file.toString());
             showNotes = ParcelUtils.readListFromTypes(bytes, YinXiangNote.CREATOR);
@@ -68,8 +97,18 @@ public class YinXiangManager {
             boolean sucess = FileUtils.byteArrayToFile(bytes, file.toString());
             if (sucess) {
                 PreferenceUtils.getInstance().saveYinXiangTime(System.currentTimeMillis());
+                if(!isRefresh) {
+                    PreferenceUtils.getInstance().saveRefreshTime(0);
+                } else {
+                    PreferenceUtils.getInstance().saveRefreshTime(1);
+                }
             }
         }
         return showNotes;
+    }
+
+
+    public static void downloadYunFile(Context context, String url) {
+
     }
 }

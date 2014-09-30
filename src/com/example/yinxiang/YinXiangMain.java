@@ -1,16 +1,29 @@
 package com.example.yinxiang;
 
 import android.app.Activity;
+import android.app.Dialog;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.net.Uri;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.LayoutInflater;
+import android.view.Menu;
+import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.AdapterView;
 import android.widget.BaseAdapter;
 import android.widget.ListView;
 import android.widget.TextView;
+import android.widget.Toast;
+
+
+import com.example.demo.R;
+import com.kc.toolbox.MyJsonRequest;
+import com.utils.DialogUtils;
+import com.utils.PreferenceUtils;
+
 
 import java.util.List;
 
@@ -20,6 +33,7 @@ import java.util.List;
 public class YinXiangMain extends Activity {
     List<YinXiangNote> mNotes = null;
     private YinXiangAdapter mAdapter = null;
+    private YinXinagDownloadMng  donwloadMng = null;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -41,8 +55,36 @@ public class YinXiangMain extends Activity {
                 startActivity(intent);
             }
         });
+        donwloadMng = new YinXinagDownloadMng(this);
+        donwloadMng.download();
     }
 
+    @Override
+    public boolean onCreateOptionsMenu(Menu menu) {
+        menu.add(0, 0, 0, "刷新").setIcon(R.drawable.menu_container_refresh_d).setShowAsAction(MenuItem.SHOW_AS_ACTION_ALWAYS);
+        return true;
+    }
+
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        if(item.getItemId() == 0) {
+            if(PreferenceUtils.getInstance().getRefreshTime() >= 1) {
+                Toast.makeText(this, "刷新次数已到极限了", Toast.LENGTH_SHORT).show();
+                return true;
+            }
+
+            final Dialog dialog = DialogUtils.createRefreshDialog(this, new DialogInterface.OnClickListener() {
+                @Override
+                public void onClick(DialogInterface dialog, int which) {
+                    dialog.dismiss();
+                    mNotes =YinXiangManager.getRandomNoteList(YinXiangMain.this, true);
+                    mAdapter.notifyDataSetChanged();
+                }
+            });
+            dialog.show();
+        }
+        return true;
+    };
 
     private class YinXiangAdapter extends BaseAdapter {
         private LayoutInflater inflater = null;
