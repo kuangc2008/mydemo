@@ -1,15 +1,16 @@
 package com.example.yinxiang;
 
 import android.app.Activity;
+import android.content.Intent;
+import android.net.Uri;
 import android.os.Bundle;
-
-import com.evernote.client.android.ClientFactory;
-import com.evernote.client.android.EvernoteSession;
-import com.evernote.client.oauth.EvernoteAuthToken;
-import com.evernote.edam.notestore.NoteStore;
-import com.evernote.edam.type.Notebook;
-
-import org.scribe.model.Token;
+import android.view.LayoutInflater;
+import android.view.View;
+import android.view.ViewGroup;
+import android.widget.AdapterView;
+import android.widget.BaseAdapter;
+import android.widget.ListView;
+import android.widget.TextView;
 
 import java.util.List;
 
@@ -17,31 +18,65 @@ import java.util.List;
  * Created by kuangcheng on 2014/9/29.
  */
 public class YinXiangMain extends Activity {
-
-    public static final String DEVELOP_TOKEN = "S=s15:U=220442:E=150194997e3:C=148c1986880:P=1cd:A=en-devtoken:V=2:H=79cb54e3c8cf32a63b1d05b524039dae";
-
-    public static final String NOTE_STORE_URL = "https://app.yinxiang.com/shard/s15/notestore";
+    List<YinXiangNote> mNotes = null;
+    private YinXiangAdapter mAdapter = null;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        String developerToken = "my developer token";
+        mNotes =YinXiangManager.getRandomNoteList(this);
 
-//// Set up the NoteStore client
-        Token toekn = new Token(DEVELOP_TOKEN, NOTE_STORE_URL);
-        EvernoteAuthToken evernoteAuth = new EvernoteAuthToken(toekn, true);
-        EvernoteSession.getOpenSession().persistAuthenticationToken(
-                getApplicationContext(), authToken, mSelectedBootstrapProfile.getSettings().getServiceHost())
+        ListView lv = new ListView(this);
+        lv.setCacheColorHint(0);
+        mAdapter = new YinXiangAdapter();
+        lv.setAdapter(mAdapter);
+        setContentView(lv, new ViewGroup.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.MATCH_PARENT));
+        lv.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+            @Override
+            public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
+                YinXiangNote note = mAdapter.getItem(position);
+                Intent intent = new Intent();
+                intent.setAction(Intent.ACTION_VIEW);
+                intent.setData(Uri.parse(note.url));
+                startActivity(intent);
+            }
+        });
+    }
 
-        ClientFactory factory = new ClientFactory(evernoteAuth);
-//        NoteStoreClient noteStore = factory.createNoteStoreClient();
-//
-//// Make API calls, passing the developer token as the authenticationToken param
-//        List<Notebook> notebooks = noteStore.listNotebooks();
-//
-//        for (Notebook notebook : notebooks) {
-//            System.out.println("Notebook: " + notebook.getName());
-//        }
 
+    private class YinXiangAdapter extends BaseAdapter {
+        private LayoutInflater inflater = null;
+
+        private YinXiangAdapter() {
+            inflater = LayoutInflater.from(YinXiangMain.this);
+        }
+
+        @Override
+        public int getCount() {
+            return mNotes.size();
+        }
+
+        @Override
+        public YinXiangNote getItem(int position) {
+            return mNotes.get(position);
+        }
+
+        @Override
+        public long getItemId(int position) {
+            return position;
+        }
+
+        @Override
+        public View getView(int position, View convertView, ViewGroup parent) {
+            TextView view = null;
+            if(convertView == null) {
+                view = (TextView) inflater.inflate(android.R.layout.simple_list_item_1, null);
+            } else {
+                view = (TextView) convertView;
+            }
+            YinXiangNote note = getItem(position);
+            view.setText(note.title);
+            return view;
+        }
     }
 }
