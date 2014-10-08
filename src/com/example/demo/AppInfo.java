@@ -36,9 +36,6 @@ public class AppInfo {
         String title = null;
         if(isPrefix(prefix)) {
             int end = label.indexOf('/', prefix.length()+1);
-            if(end == -1) {
-                return label;
-            }
             end = ( end == -1 ? label.length()  : end);
             title = (String) label.subSequence(prefix.length()+1, end);
         }
