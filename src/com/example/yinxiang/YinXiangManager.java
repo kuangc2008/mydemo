@@ -66,7 +66,7 @@ public class YinXiangManager {
 
 
     public static List<YinXiangNote> getRandomNoteList(Context context, boolean isRefresh) {
-        return getRandomNoteList(context, isRefresh, 7 , 20);
+        return getRandomNoteList(context, isRefresh, 5 , 10);
     }
 
     public static List<YinXiangNote> getRandomNoteList(Context context) {
