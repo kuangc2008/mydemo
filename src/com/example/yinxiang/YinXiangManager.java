@@ -1,18 +1,15 @@
 package com.example.yinxiang;
 
-import android.app.Activity;
 import android.content.Context;
 import android.os.Parcel;
-import android.provider.CalendarContract;
 import android.text.TextUtils;
 
 import com.example.demo.R;
+import com.utils.FilePathHelper;
 import com.utils.FileUtils;
 import com.utils.ParcelUtils;
 import com.utils.PreferenceUtils;
 import com.utils.TimeUtils;
-
-import org.w3c.dom.Text;
 
 import java.io.File;
 import java.io.FileInputStream;
@@ -32,8 +29,8 @@ public class YinXiangManager {
 
         String titlesStr = null;
         String urlsStr = null;
-        titlesStr = getStringFromLocal(context,YinXinagDownloadMng.getDownloadTitlePath());
-        urlsStr = getStringFromLocal(context,YinXinagDownloadMng.getDownloadUrlPath());
+        titlesStr = getStringFromLocal(context, FilePathHelper.getDownloadTitlePath());
+        urlsStr = getStringFromLocal(context, FilePathHelper.getDownloadUrlPath());
         if(TextUtils.isEmpty(titlesStr) || TextUtils.isEmpty(urlsStr)) {
             titlesStr = FileUtils.getStringFromRawFile(context, context.getResources().openRawResource(R.raw.names));
             urlsStr = FileUtils.getStringFromRawFile(context, context.getResources().openRawResource(R.raw.urls));
@@ -108,7 +105,5 @@ public class YinXiangManager {
     }
 
 
-    public static void downloadYunFile(Context context, String url) {
 
-    }
 }

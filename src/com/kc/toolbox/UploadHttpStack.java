@@ -56,7 +56,7 @@ import java.util.Map;
 
 /**
  * Custom implementation of com.android.volley.toolboox.HttpStack
- * Uses apache HttpClient-4.2.5 jar to take care of . You can download it from here
+ * Uses apache HttpClient-4.2.5 jar to take care of . You can download1 it from here
  * http://hc.apache.org/downloads.cgi
  * 
  * @author Mani Selvaraj

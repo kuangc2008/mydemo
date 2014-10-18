@@ -52,4 +52,12 @@ public class PreferenceUtils {
     public boolean getYinXinagVersionSuccess() {
         return sp.getBoolean("yinxiang_update_success", false);
     }
+
+    public void saveYinXinagAudioVersion(int version) {
+        sp.edit().putInt("yinxiang_audio_version", version).commit();
+    }
+
+    public int getYinXiangAudioVersion() {
+        return sp.getInt("yinxiang_audio_version", 0);
+    }
 }

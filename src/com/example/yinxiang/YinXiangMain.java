@@ -6,7 +6,6 @@ import android.content.DialogInterface;
 import android.content.Intent;
 import android.net.Uri;
 import android.os.Bundle;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuItem;
@@ -20,7 +19,6 @@ import android.widget.Toast;
 
 
 import com.example.demo.R;
-import com.kc.toolbox.MyJsonRequest;
 import com.utils.DialogUtils;
 import com.utils.PreferenceUtils;
 
@@ -55,8 +53,8 @@ public class YinXiangMain extends Activity {
                 startActivity(intent);
             }
         });
-        donwloadMng = new YinXinagDownloadMng(this);
-        donwloadMng.download();
+        donwloadMng = YinXinagDownloadMng.getInstance();
+        donwloadMng.downloadNote();
     }
 
     @Override

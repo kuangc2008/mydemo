@@ -55,7 +55,10 @@ public class GsonRequest<T> extends Request<T> {
     
     private Gson mGson;
     private Class<T> mJavaClass;
-    
+
+    /**
+     * post请求时，body就有用了
+     */
     public GsonRequest(int method, String url, Class<T> cls, String requestBody, Listener<T> listener,
                        ErrorListener errorListener) {
         super(method, url, errorListener);

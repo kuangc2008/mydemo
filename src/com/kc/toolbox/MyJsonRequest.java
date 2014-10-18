@@ -32,7 +32,7 @@ public class MyJsonRequest extends JsonObjectRequest {
 	private Map<String, String> headers = new HashMap<String, String>();
 	private Priority priority = null;
 
-    //jsonRequest就是contentType，utf8编码的
+    //jsonRequest和post请求有关
 	public MyJsonRequest(int method, String url, JSONObject jsonRequest,
 			Listener<JSONObject> listener, ErrorListener errorListener) {
 		super(method, url, jsonRequest, listener, errorListener);
