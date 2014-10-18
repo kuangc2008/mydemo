@@ -14,4 +14,10 @@ public class TimeUtils {
         int day = calendar.get(Calendar.DAY_OF_YEAR);
         return day;
     }
+
+    public static String getTimeStr(long time) {
+        int seconds = (int) (time/1000);
+        String timeStr = "%02d:%02d";
+        return String.format(timeStr, seconds/60, seconds%60);
+    }
 }
