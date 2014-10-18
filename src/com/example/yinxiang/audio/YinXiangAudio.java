@@ -72,7 +72,6 @@ public class YinXiangAudio extends Activity {
         progressTV.setGravity(Gravity.CENTER);
         LinearLayout.LayoutParams llLp1 = new LinearLayout.LayoutParams((int) (50*getResources().getDisplayMetrics().scaledDensity), ViewGroup.LayoutParams.WRAP_CONTENT);
 
-
         //2 廷加progressbar
         mProgressBar = new ProgressBar(this, null, android.R.style.Widget_ProgressBar_Horizontal);
         mProgressBar.setIndeterminate(false);

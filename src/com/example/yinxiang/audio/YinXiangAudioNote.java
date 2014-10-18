@@ -10,11 +10,13 @@ public class YinXiangAudioNote implements Parcelable{
     private String title;
     private String description;
     private YinXiangFile uri;
+    private String objectId;
 
     public YinXiangAudioNote(Parcel note) {
         title = note.readString();
         description = note.readString();
         uri = YinXiangFile.CREATOR.createFromParcel(note);
+        objectId = note.readString();
     }
 
     public String getTitle() {
@@ -46,11 +48,20 @@ public class YinXiangAudioNote implements Parcelable{
         return 0;
     }
 
+    public String getObjectId() {
+        return objectId;
+    }
+
+    public void setObjectId(String objectId) {
+        this.objectId = objectId;
+    }
+
     @Override
     public void writeToParcel(Parcel dest, int flags) {
         dest.writeString(title);
         dest.writeString(description);
         uri.writeToParcel(dest, flags);
+        dest.writeString(objectId);
     }
 
     public  static Parcelable.Creator<YinXiangAudioNote> CREATOR = new Parcelable.Creator<YinXiangAudioNote>() {
