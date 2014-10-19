@@ -41,8 +41,9 @@ import java.io.IOException;
 import java.util.List;
 import java.util.logging.Handler;
 import java.util.logging.LogRecord;
+import java.util.logging.MemoryHandler;
 
-public class YinXiangAudio extends Activity {
+public class YinXiangAudio extends Activity implements View.OnClickListener {
     YinXiangAudioAdapter mAdapter = null;
     private List<YinXiangAudioNote> mList = null;
     private LayoutInflater mInfater = null;
@@ -138,17 +139,21 @@ public class YinXiangAudio extends Activity {
         mProgressBar.setProgressDrawable(getResources().getDrawable(android.R.drawable.progress_horizontal));
         mProgressBar.setMinimumHeight((int) (50 * getResources().getDisplayMetrics().scaledDensity));
         mBottomView = new LinearLayout(this);
+        mBottomView.setOrientation(LinearLayout.VERTICAL);
+        LinearLayout line2 = new LinearLayout(this);
+        LayoutInflater.from(this).inflate(R.layout.play_pause, mBottomView);
+        mBottomView.addView(line2);
         LinearLayout.LayoutParams llLp = new LinearLayout.LayoutParams(0, ViewGroup.LayoutParams.WRAP_CONTENT);
         llLp.weight = 1;
         llLp.gravity = Gravity.CENTER_VERTICAL;
-        mBottomView.addView(progressTV,  llLp1);
-        mBottomView.addView(mProgressBar,  llLp);
+        line2.addView(progressTV,  llLp1);
+        line2.addView(mProgressBar,  llLp);
         //3 添加时间
         durationTV = new TextView(this);
         durationTV.setText("45:21");
         durationTV.setGravity(Gravity.CENTER);
         LinearLayout.LayoutParams llLp2 = new LinearLayout.LayoutParams((int) (50*getResources().getDisplayMetrics().scaledDensity), ViewGroup.LayoutParams.WRAP_CONTENT);
-        mBottomView.addView(durationTV,  llLp2);
+        line2.addView(durationTV,  llLp2);
 
         mBottomView.setVisibility(View.GONE);
         RelativeLayout.LayoutParams params = new  RelativeLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.WRAP_CONTENT);
@@ -182,6 +187,10 @@ public class YinXiangAudio extends Activity {
                 });
             }
         });
+
+        findViewById(R.id.start).setOnClickListener(this);
+        findViewById(R.id.pre).setOnClickListener(this);
+        findViewById(R.id.next).setOnClickListener(this);
     }
 
     @Override
@@ -207,6 +216,32 @@ public class YinXiangAudio extends Activity {
             }
         }
     };
+
+    @Override
+    public void onClick(View v) {
+        switch (v.getId()) {
+            case R.id.pre:
+                if(mMediaPlayer != null) {
+                    mMediaPlayer.seekTo(mMediaPlayer.getCurrentPosition() - 5 * 1000);
+                }
+                break;
+            case R.id.next:
+                if(mMediaPlayer != null) {
+                    mMediaPlayer.seekTo(mMediaPlayer.getCurrentPosition() + 5 * 1000);
+                }
+                break;
+            case R.id.start:
+                if(mMediaPlayer != null) {
+                   if(mMediaPlayer.isPlaying()) {
+                       mMediaPlayer.pause();
+                   } else {
+                       mMediaPlayer.start();
+                       mhandler.sendEmptyMessage(MSG_REFRESH_PROGRESS);
+                   }
+                }
+                break;
+        }
+    }
 
 
     class YinXiangAudioAdapter extends BaseAdapter {
