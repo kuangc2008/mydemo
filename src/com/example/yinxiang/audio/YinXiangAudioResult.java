@@ -16,6 +16,9 @@ public class YinXiangAudioResult implements Parcelable{
         results = source.createTypedArrayList(YinXiangAudioNote.CREATOR);
     }
 
+    public YinXiangAudioResult() {
+    }
+
     public List<YinXiangAudioNote> getResults() {
         return results;
     }

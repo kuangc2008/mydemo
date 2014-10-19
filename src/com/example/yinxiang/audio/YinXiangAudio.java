@@ -42,13 +42,14 @@ public class YinXiangAudio extends Activity {
     private TextView durationTV;
     private TextView progressTV;
     private LinearLayout mBottomView = null;
-
+    public static YinXiangAudio INSTANCE = null;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         mInfater = LayoutInflater.from(this);
         initViews();
+        INSTANCE = this;
         YinXinagDownloadMng.getInstance().downloadAudio(new Response.Listener<YinXiangAudioResult>() {
             @Override
             public void onResponse(YinXiangAudioResult response) {
@@ -116,6 +117,12 @@ public class YinXiangAudio extends Activity {
                 });
             }
         });
+    }
+
+    @Override
+    protected void onDestroy() {
+        super.onDestroy();
+        INSTANCE = null;
     }
 
     private static final int MSG_REFRESH_PROGRESS = 0;

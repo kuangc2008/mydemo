@@ -20,7 +20,7 @@ public class FilePathHelper {
     }
 
 
-    public static String getAudioPath() {
+    public static String getAudioPath(String fileName) {
         File filePath = null;
         if(Environment.isExternalStorageEmulated()) {
             filePath = Environment.getExternalStorageDirectory();
@@ -28,7 +28,7 @@ public class FilePathHelper {
             if(!filePath.exists()) {
                 filePath.mkdirs();
             }
-            filePath = new File(filePath, "audioHehe");
+            filePath = new File(filePath, fileName);
             if(filePath.isDirectory()) {
                 filePath.delete();
             }

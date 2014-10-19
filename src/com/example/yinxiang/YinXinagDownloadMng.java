@@ -1,7 +1,13 @@
 package com.example.yinxiang;
 
+import android.app.LoaderManager;
+import android.content.ContentValues;
 import android.content.Context;
-import android.os.Parcel;
+import android.content.CursorLoader;
+import android.content.Loader;
+import android.database.Cursor;
+import android.net.Uri;
+import android.os.Bundle;
 import android.util.Log;
 
 import com.android.volley.Request;
@@ -9,6 +15,10 @@ import com.android.volley.RequestQueue;
 import com.android.volley.Response;
 import com.android.volley.VolleyError;
 import com.android.volley.toolbox.Volley;
+import com.example.yinxiang.audio.AudioDBHelper;
+import com.example.yinxiang.audio.AudioProvider;
+import com.example.yinxiang.audio.YinXiangAudio;
+import com.example.yinxiang.audio.YinXiangAudioNote;
 import com.example.yinxiang.audio.YinXiangAudioResult;
 import com.kc.toolbox.GsonRequest;
 import com.kc.toolbox.MyJsonRequest;
@@ -18,6 +28,7 @@ import com.utils.GlobalUtils;
 import com.utils.ParcelUtils;
 import com.utils.PreferenceUtils;
 
+import org.apache.http.client.utils.URIUtils;
 import org.json.JSONException;
 import org.json.JSONObject;
 
@@ -26,6 +37,8 @@ import java.io.BufferedOutputStream;
 import java.io.FileOutputStream;
 import java.net.HttpURLConnection;
 import java.net.URL;
+import java.util.ArrayList;
+import java.util.List;
 
 /**
  * Created by kuangcheng on 2014/9/30.
@@ -160,9 +173,44 @@ public class YinXinagDownloadMng {
                 downloadNewAudioData(listener, version);
             } else {
                 //从本地取出数据，并notifiy
-                byte[] bytes = FileUtils.fileToByteArray(FilePathHelper.getAudioPath());
-                YinXiangAudioResult result = ParcelUtils.readItemFromTypes(bytes, YinXiangAudioResult.CREATOR);
-                listener.onResponse(result);
+//                byte[] bytes = FileUtils.fileToByteArray(FilePathHelper.getAudioPath("audio_file"));
+//                YinXiangAudioResult result = ParcelUtils.readItemFromTypes(bytes, YinXiangAudioResult.CREATOR);
+
+                if(YinXiangAudio.INSTANCE != null) {
+                    YinXiangAudio.INSTANCE.getLoaderManager().initLoader(0, null, new LoaderManager.LoaderCallbacks<Cursor>() {
+                        @Override
+                        public Loader<Cursor> onCreateLoader(int id, Bundle args) {
+                            return new CursorLoader( YinXiangAudio.INSTANCE,
+                                    AudioProvider.CONTENT_URI,
+                                    AudioDBHelper.ALL_COlUMN,
+                                    null,
+                                    null,
+                                    null);
+                        }
+
+                        @Override
+                        public void onLoadFinished(Loader<Cursor> loader, Cursor data) {
+                            YinXiangAudioResult result = new YinXiangAudioResult();
+                            List<YinXiangAudioNote> notes = new ArrayList<YinXiangAudioNote>();
+                            while(data.moveToNext()) {
+                                String desc = data.getString(AudioDBHelper.DESC_INDEX);
+                                String url = data.getString(AudioDBHelper.URL_INDEX);
+                                String title = data.getString(AudioDBHelper.TITLE_INDEX);
+                                String objectid = data.getString(AudioDBHelper.OBJECT_ID_INDEX);
+                                String filePath = data.getString(AudioDBHelper.FILE_PATH_INDEX);
+                                YinXiangAudioNote note = new YinXiangAudioNote(title, desc, new YinXiangFile(url), objectid, filePath);
+                                notes.add(note);
+                            }
+                            result.setResults(notes);
+                            listener.onResponse(result);
+                        }
+
+                        @Override
+                        public void onLoaderReset(Loader<Cursor> loader) {
+
+                        }
+                    });
+                }
             }
         } catch (JSONException e) {
             e.printStackTrace();
@@ -170,7 +218,7 @@ public class YinXinagDownloadMng {
     }
 
     private void downloadNewAudioData(final Response.Listener<YinXiangAudioResult> listener, final int version) {
-        GsonRequest request = new GsonRequest(Request.Method.GET,
+        final GsonRequest request = new GsonRequest(Request.Method.GET,
                 "https://cn.avoscloud.com:443/1/classes/YiinXiangAudio",
                 YinXiangAudioResult.class,
                 null,
@@ -179,9 +227,36 @@ public class YinXinagDownloadMng {
                     public void onResponse(YinXiangAudioResult response) {
                         listener.onResponse(response);  //通知界面
                         //保存到本地，并保存版本号
-                        Parcel parcel = ParcelUtils.writeToParcel(response);
-                        FileUtils.byteArrayToFile(parcel.marshall(), FilePathHelper.getAudioPath());
-                        PreferenceUtils.getInstance().saveYinXinagAudioVersion(version);
+//                        Parcel parcel = ParcelUtils.writeToParcel(response);
+//                        FileUtils.byteArrayToFile(parcel.marshall(), FilePathHelper.getAudioPath("audio_file"));
+//                        PreferenceUtils.getInstance().saveYinXinagAudioVersion(version);
+                        final List<YinXiangAudioNote> notes = response.getResults();
+                        new Thread(new Runnable() {
+                            @Override
+                            public void run() {
+                                for(YinXiangAudioNote note : notes) {
+                                    ContentValues cv = new ContentValues();
+                                    Cursor c = mContext.getContentResolver().query(
+                                            AudioProvider.CONTENT_URI,
+                                            new String[]{AudioDBHelper._ID},
+                                            AudioDBHelper.OBJECT_ID + "=?",
+                                            new String[]{AudioDBHelper.OBJECT_ID},
+                                            null);
+                                    if(c.getCount() != 0) {
+                                        return;
+                                    }
+                                    cv.put(AudioDBHelper.OBJECT_ID, note.getObjectId());
+                                    cv.put(AudioDBHelper.TITLE, note.getTitle());
+                                    cv.put(AudioDBHelper.URL, note.getUri().getUrl());
+                                    cv.put(AudioDBHelper.DESC, note.getDescription());
+                                    Uri result = mContext.getContentResolver().insert(AudioProvider.CONTENT_URI,cv);
+                                    if(result == null) {
+                                        return;
+                                    }
+                                }
+                                PreferenceUtils.getInstance().saveYinXinagAudioVersion(version);
+                            }
+                        }).start();
                     }
                 },
                 new Response.ErrorListener() {

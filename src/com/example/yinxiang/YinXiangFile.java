@@ -9,11 +9,16 @@ import android.os.Parcelable;
 public class YinXiangFile implements Parcelable{
 
     private String url;
-    private String name;
+//    private String name;
+
+
+    public YinXiangFile(String url) {
+        this.url = url;
+    }
 
     public YinXiangFile(Parcel source) {
         url = source.readString();
-        name = source.readString();
+//        name = source.readString();
     }
 
     public String getUrl() {
@@ -32,7 +37,7 @@ public class YinXiangFile implements Parcelable{
     @Override
     public void writeToParcel(Parcel dest, int flags) {
         dest.writeString(url);
-        dest.writeString(name);
+//        dest.writeString(name);
     }
 
     public  static Parcelable.Creator<YinXiangFile> CREATOR = new Parcelable.Creator<YinXiangFile>() {
