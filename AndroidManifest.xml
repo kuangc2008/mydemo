@@ -506,6 +506,15 @@
                 <action android:name="com.example.demo.demoaction"/>
             </intent-filter>
         </activity>
+        <activity android:name="com.example.yinxiang.audio.YinXiangUploadAudio"
+            android:windowSoftInputMode="adjustPan">
+            <intent-filter>
+                <action android:name="android.intent.action.VIEW" />
+                <category android:name="android.intent.category.DEFAULT" />
+                <data android:mimeType="audio/mpeg" android:scheme="file" />
+            </intent-filter>
+        </activity>
+
     </application>
 
 </manifest>
