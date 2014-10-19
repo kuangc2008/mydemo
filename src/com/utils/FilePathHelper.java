@@ -32,6 +32,7 @@ public class FilePathHelper {
             if(filePath.isDirectory()) {
                 filePath.delete();
             }
+            int i =0;
             if(!filePath.exists()) {
                 try {
                     filePath.createNewFile();
@@ -39,6 +40,7 @@ public class FilePathHelper {
                     e.printStackTrace();
                 }
             }
+
 
         } else {
             filePath = new File(GlobalUtils.mContext.getFilesDir(), "audio");

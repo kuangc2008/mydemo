@@ -112,7 +112,7 @@ public class YinXinagDownloadMng {
         }
     }
 
-    private boolean downloadFile(String urlStr, String path) {
+    public boolean downloadFile(String urlStr, String path) {
         boolean sucess = true;
         BufferedInputStream inputStream = null;
         BufferedOutputStream outputStream = null;
@@ -157,6 +157,7 @@ public class YinXinagDownloadMng {
                     @Override
                     public void onErrorResponse(VolleyError error) {
                         Log.w("kcc", "onErrorResponse", error);
+                        getFromLocalDB(listener);
                     }
                 });
         request.setHeader("X-AVOSCloud-Application-Id", "418dgirlkcy5pqph1tiuts5pxhdhjz4s3rft986mvevo73hi");
@@ -176,44 +177,49 @@ public class YinXinagDownloadMng {
 //                byte[] bytes = FileUtils.fileToByteArray(FilePathHelper.getAudioPath("audio_file"));
 //                YinXiangAudioResult result = ParcelUtils.readItemFromTypes(bytes, YinXiangAudioResult.CREATOR);
 
-                if(YinXiangAudio.INSTANCE != null) {
-                    YinXiangAudio.INSTANCE.getLoaderManager().initLoader(0, null, new LoaderManager.LoaderCallbacks<Cursor>() {
-                        @Override
-                        public Loader<Cursor> onCreateLoader(int id, Bundle args) {
-                            return new CursorLoader( YinXiangAudio.INSTANCE,
-                                    AudioProvider.CONTENT_URI,
-                                    AudioDBHelper.ALL_COlUMN,
-                                    null,
-                                    null,
-                                    null);
-                        }
-
-                        @Override
-                        public void onLoadFinished(Loader<Cursor> loader, Cursor data) {
-                            YinXiangAudioResult result = new YinXiangAudioResult();
-                            List<YinXiangAudioNote> notes = new ArrayList<YinXiangAudioNote>();
-                            while(data.moveToNext()) {
-                                String desc = data.getString(AudioDBHelper.DESC_INDEX);
-                                String url = data.getString(AudioDBHelper.URL_INDEX);
-                                String title = data.getString(AudioDBHelper.TITLE_INDEX);
-                                String objectid = data.getString(AudioDBHelper.OBJECT_ID_INDEX);
-                                String filePath = data.getString(AudioDBHelper.FILE_PATH_INDEX);
-                                YinXiangAudioNote note = new YinXiangAudioNote(title, desc, new YinXiangFile(url), objectid, filePath);
-                                notes.add(note);
-                            }
-                            result.setResults(notes);
-                            listener.onResponse(result);
-                        }
-
-                        @Override
-                        public void onLoaderReset(Loader<Cursor> loader) {
-
-                        }
-                    });
-                }
+                getFromLocalDB(listener);
             }
         } catch (JSONException e) {
             e.printStackTrace();
+        }
+    }
+
+    private void getFromLocalDB(final Response.Listener<YinXiangAudioResult> listener) {
+        if(YinXiangAudio.INSTANCE != null) {
+            YinXiangAudio.INSTANCE.getLoaderManager().initLoader(0, null, new LoaderManager.LoaderCallbacks<Cursor>() {
+                @Override
+                public Loader<Cursor> onCreateLoader(int id, Bundle args) {
+                    return new CursorLoader( YinXiangAudio.INSTANCE,
+                            AudioProvider.CONTENT_URI,
+                            AudioDBHelper.ALL_COlUMN,
+                            null,
+                            null,
+                            null);
+                }
+
+                @Override
+                public void onLoadFinished(Loader<Cursor> loader, Cursor data) {
+                    YinXiangAudioResult result = new YinXiangAudioResult();
+                    List<YinXiangAudioNote> notes = new ArrayList<YinXiangAudioNote>();
+                    while(data.moveToNext()) {
+                        String desc = data.getString(AudioDBHelper.DESC_INDEX);
+                        String url = data.getString(AudioDBHelper.URL_INDEX);
+                        String title = data.getString(AudioDBHelper.TITLE_INDEX);
+                        String objectid = data.getString(AudioDBHelper.OBJECT_ID_INDEX);
+                        String filePath = data.getString(AudioDBHelper.FILE_PATH_INDEX);
+                        YinXiangAudioNote note = new YinXiangAudioNote(title, desc, new YinXiangFile(url), objectid, filePath);
+                        note.setId(data.getInt(AudioDBHelper.ID_INDEX));
+                        notes.add(note);
+                    }
+                    result.setResults(notes);
+                    listener.onResponse(result);
+                }
+
+                @Override
+                public void onLoaderReset(Loader<Cursor> loader) {
+
+                }
+            });
         }
     }
 

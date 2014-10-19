@@ -13,6 +13,7 @@ public class YinXiangAudioNote implements Parcelable{
     private String objectId;
 
     private String filePath;
+    private int id;
 
     public YinXiangAudioNote(String title, String description, YinXiangFile uri, String objectId, String filePath) {
         this.title = title;
@@ -27,6 +28,14 @@ public class YinXiangAudioNote implements Parcelable{
         description = note.readString();
         uri = YinXiangFile.CREATOR.createFromParcel(note);
         objectId = note.readString();
+    }
+
+    public int getId() {
+        return id;
+    }
+
+    public void setId(int id) {
+        this.id = id;
     }
 
     public String getTitle() {

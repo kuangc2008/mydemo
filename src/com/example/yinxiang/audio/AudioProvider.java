@@ -26,7 +26,7 @@ public class AudioProvider extends ContentProvider {
     private static final int MY_AUDIO_ID = 2;
     static {
         sURIMatcher.addURI(AUTHORITY, "audios", MY_AUDIOS);
-        sURIMatcher.addURI(AUTHORITY, "audio/#", MY_AUDIO_ID);
+        sURIMatcher.addURI(AUTHORITY, "audios/#", MY_AUDIO_ID);
     }
 
     @Override
@@ -106,6 +106,17 @@ public class AudioProvider extends ContentProvider {
 
     @Override
     public int update(Uri uri, ContentValues values, String selection, String[] selectionArgs) {
-        return 0;
+        SQLiteDatabase db = mOpenHelper.getWritableDatabase();
+        int count = 0;
+        int match = sURIMatcher.match(uri);
+        switch (match) {
+            case MY_AUDIOS:
+            case MY_AUDIO_ID:
+                count = db.update(AudioDBHelper.DB_TABLE, values, selection, selectionArgs);
+        }
+        if (match == MY_AUDIO_ID) {
+            getContext().getContentResolver().notifyChange(uri, null);
+        }
+        return count;
     }
 }

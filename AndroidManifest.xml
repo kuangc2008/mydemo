@@ -514,7 +514,10 @@
                 <data android:mimeType="audio/mpeg" android:scheme="file" />
             </intent-filter>
         </activity>
-
+        <provider
+            android:name="com.example.yinxiang.audio.AudioProvider"
+            android:authorities="com.example.yinxiang.audio"
+            android:exported="false" />
     </application>
 
 </manifest>

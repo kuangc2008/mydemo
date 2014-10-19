@@ -1,32 +1,42 @@
 package com.example.yinxiang.audio;
 
 import android.app.Activity;
+import android.content.ContentUris;
+import android.content.ContentValues;
 import android.content.Intent;
 import android.media.MediaPlayer;
 import android.net.Uri;
+import android.os.AsyncTask;
 import android.os.Bundle;
 import android.os.Message;
 import android.text.Layout;
 import android.view.Gravity;
 import android.view.LayoutInflater;
+import android.view.Menu;
+import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.AdapterView;
 import android.widget.BaseAdapter;
+import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.ListView;
 import android.widget.ProgressBar;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.android.volley.Response;
 import com.example.demo.R;
 import com.example.yinxiang.YinXiangFile;
 import com.example.yinxiang.YinXiangNote;
 import com.example.yinxiang.YinXinagDownloadMng;
+import com.utils.FilePathHelper;
 import com.utils.MediaPlayUtils;
+import com.utils.PreferenceUtils;
 import com.utils.TimeUtils;
 
+import java.io.File;
 import java.io.IOException;
 import java.util.List;
 import java.util.logging.Handler;
@@ -57,6 +67,55 @@ public class YinXiangAudio extends Activity {
                 mAdapter.notifyDataSetChanged();
             }
         });
+    }
+
+    @Override
+    public boolean onCreateOptionsMenu(Menu menu) {
+        menu.add(0, 0, 0, "下载");
+        return true;
+    }
+
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        switch (item.getItemId()) {
+            case 0: {
+                for(YinXiangAudioNote note : mList) {
+                    final YinXiangAudioNote fianlNote = note;
+                    if(note.getFilePath() == null) {
+                        if(note.getFilePath() == null || !new File(note.getFilePath()).exists()) {
+                            Uri downloaduri = Uri.parse(note.getUri().getUrl());
+                            final String name = downloaduri.getLastPathSegment();
+                            AsyncTask task = new AsyncTask<Void, Void, Boolean>() {
+                                @Override
+                                protected Boolean doInBackground(Void... params) {
+                                    String savePath = FilePathHelper.getAudioPath(name);
+                                    boolean isSuccess = YinXinagDownloadMng.getInstance().downloadFile(fianlNote.getUri().getUrl(),
+                                            savePath);
+                                    if(isSuccess) {
+                                        Uri uri = ContentUris.withAppendedId(AudioProvider.CONTENT_URI, fianlNote.getId());
+                                        ContentValues values = new ContentValues();
+                                        values.put(AudioDBHelper.FILE_PATH, savePath);
+                                        getBaseContext().getContentResolver().update(uri, values, null, null);
+                                        fianlNote.setFilePath(savePath);
+                                    }
+                                    return isSuccess;
+                                }
+
+                                @Override
+                                protected void onPostExecute(Boolean aVoid) {
+                                    mAdapter.notifyDataSetChanged();
+                                }
+                            };
+                            task.execute((Void[])null);
+                        }
+                    } else {
+                        Toast.makeText(getApplicationContext(), "failture",  Toast.LENGTH_SHORT).show();
+                    }
+                }
+
+            }
+        }
+        return true;
     }
 
     private void initViews() {
@@ -101,7 +160,13 @@ public class YinXiangAudio extends Activity {
             @Override
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
                 YinXiangAudioNote note = mAdapter.getItem(position);
-                mMediaPlayer = MediaPlayUtils.getInstance().playAudio(note.getUri().getUrl(), new MediaPlayer.OnPreparedListener() {
+                String url = null;
+                if(note.getFilePath() != null && new File(note.getFilePath()).exists()) {
+                    url = Uri.fromFile(new File(note.getFilePath())).toString();
+                } else {
+                    url = note.getUri().getUrl();
+                }
+                mMediaPlayer = MediaPlayUtils.getInstance().playAudio(url, new MediaPlayer.OnPreparedListener() {
                     @Override
                     public void onPrepared(MediaPlayer mp) {
                         mProgressBar.setMax(mp.getDuration());
@@ -169,9 +234,10 @@ public class YinXiangAudio extends Activity {
             ViewHolder mHolder = null;
             if(convertView == null) {
                 mHolder = new ViewHolder();
-               convertView = mInfater.inflate(R.layout.two_line_icon, null);
+                convertView = mInfater.inflate(R.layout.two_line_icon, null);
                 mHolder.textLine1 = (TextView) convertView.findViewById(android.R.id.text1);
                 mHolder.textLine2 = (TextView) convertView.findViewById(android.R.id.text2);
+                mHolder.mImageView = (ImageView) convertView.findViewById(R.id.imageview);
                 convertView.setTag(mHolder);
             } else {
                 mHolder = (ViewHolder) convertView.getTag();
@@ -180,6 +246,11 @@ public class YinXiangAudio extends Activity {
             YinXiangAudioNote note = getItem(position);
             mHolder.textLine1.setText(note.getTitle().replace("$$", "\n"));
             mHolder.textLine2.setText(note.getDescription().replace("$$", "\n"));
+            if(note.getFilePath() != null && new File(note.getFilePath()).exists()) {
+                mHolder.mImageView.setVisibility(View.VISIBLE);
+            } else {
+                mHolder.mImageView.setVisibility(View.GONE);
+            }
             return convertView;
         }
 
@@ -187,6 +258,7 @@ public class YinXiangAudio extends Activity {
     private static class ViewHolder {
         TextView textLine1;
         TextView textLine2;
+        ImageView mImageView;
     }
 
 
