@@ -246,7 +246,7 @@ public class YinXinagDownloadMng {
                                             AudioProvider.CONTENT_URI,
                                             new String[]{AudioDBHelper._ID},
                                             AudioDBHelper.OBJECT_ID + "=?",
-                                            new String[]{AudioDBHelper.OBJECT_ID},
+                                            new String[]{note.getObjectId()},
                                             null);
                                     if(c.getCount() != 0) {
                                         return;
