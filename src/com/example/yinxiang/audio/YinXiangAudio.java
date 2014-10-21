@@ -109,8 +109,6 @@ public class YinXiangAudio extends Activity implements View.OnClickListener {
                             };
                             task.execute((Void[])null);
                         }
-                    } else {
-                        Toast.makeText(getApplicationContext(), "failture",  Toast.LENGTH_SHORT).show();
                     }
                 }
 

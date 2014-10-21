@@ -7,6 +7,7 @@ import android.content.CursorLoader;
 import android.content.Loader;
 import android.database.Cursor;
 import android.net.Uri;
+import android.os.AsyncTask;
 import android.os.Bundle;
 import android.util.Log;
 
@@ -169,7 +170,7 @@ public class YinXinagDownloadMng {
         try {
             final int version = response.getInt("yinxiang_version");
             int oldVersion = PreferenceUtils.getInstance().getYinXiangAudioVersion();
-            if(version > oldVersion) {
+            if(true ||version > oldVersion) {
                 //下载新数据
                 downloadNewAudioData(listener, version);
             } else {
@@ -230,39 +231,50 @@ public class YinXinagDownloadMng {
                 null,
                 new Response.Listener<YinXiangAudioResult>() {
                     @Override
-                    public void onResponse(YinXiangAudioResult response) {
-                        listener.onResponse(response);  //通知界面
+                    public void onResponse(final YinXiangAudioResult response) {
                         //保存到本地，并保存版本号
 //                        Parcel parcel = ParcelUtils.writeToParcel(response);
 //                        FileUtils.byteArrayToFile(parcel.marshall(), FilePathHelper.getAudioPath("audio_file"));
 //                        PreferenceUtils.getInstance().saveYinXinagAudioVersion(version);
-                        final List<YinXiangAudioNote> notes = response.getResults();
-                        new Thread(new Runnable() {
+                        AsyncTask<Void, Void, Boolean> task = new AsyncTask<Void, Void, Boolean>() {
                             @Override
-                            public void run() {
+                            protected Boolean doInBackground(Void... params) {
+                                final List<YinXiangAudioNote> notes = response.getResults();
                                 for(YinXiangAudioNote note : notes) {
                                     ContentValues cv = new ContentValues();
                                     Cursor c = mContext.getContentResolver().query(
                                             AudioProvider.CONTENT_URI,
-                                            new String[]{AudioDBHelper._ID},
+                                            new String[]{AudioDBHelper._ID, AudioDBHelper.FILE_PATH},
                                             AudioDBHelper.OBJECT_ID + "=?",
                                             new String[]{note.getObjectId()},
                                             null);
-                                    if(c.getCount() != 0) {
-                                        return;
-                                    }
-                                    cv.put(AudioDBHelper.OBJECT_ID, note.getObjectId());
-                                    cv.put(AudioDBHelper.TITLE, note.getTitle());
-                                    cv.put(AudioDBHelper.URL, note.getUri().getUrl());
-                                    cv.put(AudioDBHelper.DESC, note.getDescription());
-                                    Uri result = mContext.getContentResolver().insert(AudioProvider.CONTENT_URI,cv);
-                                    if(result == null) {
-                                        return;
+                                    if(c != null && c.moveToFirst()) {
+                                        String filePath = c.getString(1);
+                                        note.setFilePath(filePath);
+                                        note.setId(c.getInt(0));
+                                    } else {
+                                        cv.put(AudioDBHelper.OBJECT_ID, note.getObjectId());
+                                        cv.put(AudioDBHelper.TITLE, note.getTitle());
+                                        cv.put(AudioDBHelper.URL, note.getUri().getUrl());
+                                        cv.put(AudioDBHelper.DESC, note.getDescription());
+                                        Uri result = mContext.getContentResolver().insert(AudioProvider.CONTENT_URI, cv);
+                                        if (result == null) {
+                                            return false;
+                                        }
                                     }
                                 }
-                                PreferenceUtils.getInstance().saveYinXinagAudioVersion(version);
+                                return true;
                             }
-                        }).start();
+
+                            @Override
+                            protected void onPostExecute(Boolean aBoolean) {
+                                if(aBoolean) {
+                                    PreferenceUtils.getInstance().saveYinXinagAudioVersion(version);
+                                }
+                                listener.onResponse(response);  //通知界面
+                            }
+                        };
+                        task.execute((Void[])null);
                     }
                 },
                 new Response.ErrorListener() {
