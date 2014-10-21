@@ -94,10 +94,11 @@ public class AudioProvider extends ContentProvider {
         int count = 0;
         int match = sURIMatcher.match(uri);
         switch (match) {
-            case MY_AUDIOS:
             case MY_AUDIO_ID:
-                count = db.delete(AudioDBHelper.DB_TABLE, selection, selectionArgs);
+                String longid = uri.getPathSegments().get(1);
+                selection = selection + "(" + AudioDBHelper._ID +  longid + ")";
         }
+        count = db.delete(AudioDBHelper.DB_TABLE, selection, selectionArgs);
         if (match == MY_AUDIO_ID) {
             getContext().getContentResolver().notifyChange(uri, null);
         }
@@ -109,11 +110,18 @@ public class AudioProvider extends ContentProvider {
         SQLiteDatabase db = mOpenHelper.getWritableDatabase();
         int count = 0;
         int match = sURIMatcher.match(uri);
+        String newSelection = null;
         switch (match) {
-            case MY_AUDIOS:
             case MY_AUDIO_ID:
-                count = db.update(AudioDBHelper.DB_TABLE, values, selection, selectionArgs);
+                String longid = uri.getPathSegments().get(1);
+                newSelection =  "(" + AudioDBHelper._ID + "=" +  longid + ")";
+                if(selection != null) {
+                    newSelection = (selection + newSelection);
+                }
+            case MY_AUDIOS:
+                newSelection = selection;
         }
+        count = db.update(AudioDBHelper.DB_TABLE, values, newSelection, selectionArgs);
         if (match == MY_AUDIO_ID) {
             getContext().getContentResolver().notifyChange(uri, null);
         }

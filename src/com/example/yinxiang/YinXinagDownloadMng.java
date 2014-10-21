@@ -170,7 +170,7 @@ public class YinXinagDownloadMng {
         try {
             final int version = response.getInt("yinxiang_version");
             int oldVersion = PreferenceUtils.getInstance().getYinXiangAudioVersion();
-            if(true ||version > oldVersion) {
+            if(version > oldVersion) {
                 //下载新数据
                 downloadNewAudioData(listener, version);
             } else {
@@ -241,7 +241,6 @@ public class YinXinagDownloadMng {
                             protected Boolean doInBackground(Void... params) {
                                 final List<YinXiangAudioNote> notes = response.getResults();
                                 for(YinXiangAudioNote note : notes) {
-                                    ContentValues cv = new ContentValues();
                                     Cursor c = mContext.getContentResolver().query(
                                             AudioProvider.CONTENT_URI,
                                             new String[]{AudioDBHelper._ID, AudioDBHelper.FILE_PATH},
@@ -253,11 +252,14 @@ public class YinXinagDownloadMng {
                                         note.setFilePath(filePath);
                                         note.setId(c.getInt(0));
                                     } else {
+                                        ContentValues cv = new ContentValues();
                                         cv.put(AudioDBHelper.OBJECT_ID, note.getObjectId());
                                         cv.put(AudioDBHelper.TITLE, note.getTitle());
                                         cv.put(AudioDBHelper.URL, note.getUri().getUrl());
                                         cv.put(AudioDBHelper.DESC, note.getDescription());
                                         Uri result = mContext.getContentResolver().insert(AudioProvider.CONTENT_URI, cv);
+                                        String longid = result.getPathSegments().get(1);
+                                        note.setId(Integer.parseInt(longid));
                                         if (result == null) {
                                             return false;
                                         }

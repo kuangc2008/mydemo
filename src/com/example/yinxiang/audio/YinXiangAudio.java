@@ -153,7 +153,12 @@ public class YinXiangAudio extends Activity implements View.OnClickListener {
         LinearLayout.LayoutParams llLp2 = new LinearLayout.LayoutParams((int) (50*getResources().getDisplayMetrics().scaledDensity), ViewGroup.LayoutParams.WRAP_CONTENT);
         line2.addView(durationTV,  llLp2);
 
-        mBottomView.setVisibility(View.GONE);
+        mMediaPlayer = MediaPlayUtils.getInstance().getmPlayer();
+        if(mMediaPlayer != null && mMediaPlayer.isPlaying()) {
+            mBottomView.setVisibility(View.VISIBLE);
+        } else {
+            mBottomView.setVisibility(View.GONE);
+        }
         RelativeLayout.LayoutParams params = new  RelativeLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.WRAP_CONTENT);
         params.setMargins(30, 0, 30, 30);
         params.addRule(RelativeLayout.ALIGN_PARENT_BOTTOM, RelativeLayout.TRUE);
