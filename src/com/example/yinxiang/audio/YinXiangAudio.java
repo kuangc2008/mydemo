@@ -10,6 +10,7 @@ import android.os.AsyncTask;
 import android.os.Bundle;
 import android.os.Message;
 import android.text.Layout;
+import android.util.Log;
 import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.Menu;
@@ -81,23 +82,23 @@ public class YinXiangAudio extends Activity implements View.OnClickListener {
         switch (item.getItemId()) {
             case 0: {
                 for(YinXiangAudioNote note : mList) {
-                    final YinXiangAudioNote fianlNote = note;
                     if(note.getFilePath() == null) {
                         if(note.getFilePath() == null || !new File(note.getFilePath()).exists()) {
-                            Uri downloaduri = Uri.parse(note.getUri().getUrl());
-                            final String name = downloaduri.getLastPathSegment();
-                            AsyncTask task = new AsyncTask<Void, Void, Boolean>() {
+                            AsyncTask<YinXiangAudioNote, Void, Boolean> task = new AsyncTask<YinXiangAudioNote, Void, Boolean>() {
                                 @Override
-                                protected Boolean doInBackground(Void... params) {
+                                protected Boolean doInBackground(YinXiangAudioNote... params) {
+                                    YinXiangAudioNote note = params[0];
+                                    Uri downloaduri = Uri.parse(note.getUri().getUrl());
+                                    final String name = downloaduri.getLastPathSegment();
                                     String savePath = FilePathHelper.getAudioPath(name);
-                                    boolean isSuccess = YinXinagDownloadMng.getInstance().downloadFile(fianlNote.getUri().getUrl(),
+                                    boolean isSuccess = YinXinagDownloadMng.getInstance().downloadFile(note.getUri().getUrl(),
                                             savePath);
                                     if(isSuccess) {
-                                        Uri uri = ContentUris.withAppendedId(AudioProvider.CONTENT_URI, fianlNote.getId());
+                                        Uri uri = ContentUris.withAppendedId(AudioProvider.CONTENT_URI, note.getId());
                                         ContentValues values = new ContentValues();
                                         values.put(AudioDBHelper.FILE_PATH, savePath);
-                                        getBaseContext().getContentResolver().update(uri, values, null, null);
-                                        fianlNote.setFilePath(savePath);
+                                        int count = getBaseContext().getContentResolver().update(uri, values, null, null);
+                                        note.setFilePath(savePath);
                                     }
                                     return isSuccess;
                                 }
@@ -107,7 +108,7 @@ public class YinXiangAudio extends Activity implements View.OnClickListener {
                                     mAdapter.notifyDataSetChanged();
                                 }
                             };
-                            task.execute((Void[])null);
+                            task.execute(note);
                         }
                     }
                 }

@@ -118,6 +118,7 @@ public class AudioProvider extends ContentProvider {
                 if(selection != null) {
                     newSelection = (selection + newSelection);
                 }
+                break;
             case MY_AUDIOS:
                 newSelection = selection;
         }
