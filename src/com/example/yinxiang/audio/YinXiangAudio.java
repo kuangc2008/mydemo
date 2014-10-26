@@ -235,6 +235,8 @@ public class YinXiangAudio extends Activity implements View.OnClickListener {
                     randomPlay();
                 } else {
                     mBottomView.setVisibility(View.GONE);
+                    MediaPlayUtils.getInstance().destory();
+                    mMediaPlayer = null;
                 }
             }
         });
