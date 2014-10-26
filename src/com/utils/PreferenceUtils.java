@@ -60,4 +60,12 @@ public class PreferenceUtils {
     public int getYinXiangAudioVersion() {
         return sp.getInt("yinxiang_audio_version", 0);
     }
+
+    public void saveYinXinagRandom(boolean random) {
+        sp.edit().putBoolean("yinxiang_random", random).commit();
+    }
+
+    public boolean getYinXiangRnadom() {
+        return sp.getBoolean("yinxiang_random", false);
+    }
 }

@@ -4,6 +4,7 @@ import android.app.Activity;
 import android.content.ContentUris;
 import android.content.ContentValues;
 import android.content.Intent;
+import android.graphics.Color;
 import android.media.MediaPlayer;
 import android.net.Uri;
 import android.os.AsyncTask;
@@ -42,6 +43,7 @@ import com.utils.TimeUtils;
 import java.io.File;
 import java.io.IOException;
 import java.util.List;
+import java.util.Random;
 import java.util.logging.Handler;
 import java.util.logging.LogRecord;
 import java.util.logging.MemoryHandler;
@@ -57,6 +59,7 @@ public class YinXiangAudio extends Activity implements View.OnClickListener {
     private TextView progressTV;
     private LinearLayout mBottomView = null;
     public static YinXiangAudio INSTANCE = null;
+    private boolean isRandom = false;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -71,11 +74,14 @@ public class YinXiangAudio extends Activity implements View.OnClickListener {
                 mAdapter.notifyDataSetChanged();
             }
         });
+        isRandom = PreferenceUtils.getInstance().getYinXiangRnadom();
+
     }
 
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
         menu.add(0, 0, 0, "下载");
+        menu.add(0, 1, 0, isRandom ?"随" : "单").setShowAsAction(MenuItem.SHOW_AS_ACTION_ALWAYS);
         return true;
     }
 
@@ -116,6 +122,16 @@ public class YinXiangAudio extends Activity implements View.OnClickListener {
                 }
 
             }
+            break;
+            case 1:
+                if(item.getTitle().equals("随")) {
+                    item.setTitle("单");
+                    isRandom = false;
+                } else {
+                    item.setTitle("随");
+                    isRandom = true;
+                }
+                break;
         }
         return true;
     }
@@ -127,7 +143,12 @@ public class YinXiangAudio extends Activity implements View.OnClickListener {
         mListView.setCacheColorHint(0);
         mAdapter = new YinXiangAudioAdapter();
         mListView.setAdapter(mAdapter);
-        rl.addView(mListView, new RelativeLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.MATCH_PARENT));
+
+        mBottomView = new LinearLayout(this);
+        mBottomView.setId(View.generateViewId());
+        RelativeLayout.LayoutParams rlp1 = new RelativeLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.MATCH_PARENT);
+        rlp1.addRule(RelativeLayout.ABOVE, mBottomView.getId());
+        rl.addView(mListView, rlp1);
         //添加时间1
         progressTV = new TextView(this);
         progressTV.setText("45:21");
@@ -139,11 +160,12 @@ public class YinXiangAudio extends Activity implements View.OnClickListener {
         mProgressBar.setIndeterminate(false);
         mProgressBar.setProgressDrawable(getResources().getDrawable(android.R.drawable.progress_horizontal));
         mProgressBar.setMinimumHeight((int) (50 * getResources().getDisplayMetrics().scaledDensity));
-        mBottomView = new LinearLayout(this);
+
         mBottomView.setOrientation(LinearLayout.VERTICAL);
         LinearLayout line2 = new LinearLayout(this);
         LayoutInflater.from(this).inflate(R.layout.play_pause, mBottomView);
         mBottomView.addView(line2);
+        mBottomView.setBackgroundColor(Color.GRAY);
         LinearLayout.LayoutParams llLp = new LinearLayout.LayoutParams(0, ViewGroup.LayoutParams.WRAP_CONTENT);
         llLp.weight = 1;
         llLp.gravity = Gravity.CENTER_VERTICAL;
@@ -156,55 +178,86 @@ public class YinXiangAudio extends Activity implements View.OnClickListener {
         LinearLayout.LayoutParams llLp2 = new LinearLayout.LayoutParams((int) (50*getResources().getDisplayMetrics().scaledDensity), ViewGroup.LayoutParams.WRAP_CONTENT);
         line2.addView(durationTV,  llLp2);
 
-        mMediaPlayer = MediaPlayUtils.getInstance().getmPlayer();
-        if(mMediaPlayer != null && mMediaPlayer.isPlaying()) {
-            mBottomView.setVisibility(View.VISIBLE);
-        } else {
-            mBottomView.setVisibility(View.GONE);
-        }
         RelativeLayout.LayoutParams params = new  RelativeLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.WRAP_CONTENT);
         params.setMargins(30, 0, 30, 30);
         params.addRule(RelativeLayout.ALIGN_PARENT_BOTTOM, RelativeLayout.TRUE);
+        params.setMargins(0, 30, 0, 0);
         rl.addView(mBottomView,params);
         setContentView(rl, new ViewGroup.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.MATCH_PARENT));
         mListView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
                 YinXiangAudioNote note = mAdapter.getItem(position);
-                String url = null;
-                if(note.getFilePath() != null && new File(note.getFilePath()).exists()) {
-                    url = Uri.fromFile(new File(note.getFilePath())).toString();
-                } else {
-                    if(note.getFrom() == 1) {
-                        String path = Environment.getExternalStorageDirectory() + "/download/" + note.getTitle() + ".m4a";
-                        if(!new File(path).exists()) {
-                            startActivity(new Intent(Intent.ACTION_VIEW, Uri.parse(note.getYinxianguri())));
-                            return;
-                        } else {
-                            url = Uri.fromFile(new File(path)).toString();
-                        }
-                    }
+                String url = getUrl(note);
+                if(url == null && note.getFrom() == 1) {
+                    startActivity(new Intent(Intent.ACTION_VIEW, Uri.parse(note.getYinxianguri())));
+                    return;
                 }
-                mMediaPlayer = MediaPlayUtils.getInstance().playAudio(url, new MediaPlayer.OnPreparedListener() {
-                    @Override
-                    public void onPrepared(MediaPlayer mp) {
-                        mProgressBar.setMax(mp.getDuration());
-                        durationTV.setText(TimeUtils.getTimeStr(mp.getDuration()));
-                        mhandler.sendEmptyMessage(MSG_REFRESH_PROGRESS);
-                    }
-                });
-                mMediaPlayer.setOnCompletionListener(new MediaPlayer.OnCompletionListener() {
-                    @Override
-                    public void onCompletion(MediaPlayer mp) {
-                        mBottomView.setVisibility(View.GONE);
-                    }
-                });
+                playAudio(url);
             }
         });
 
         findViewById(R.id.start).setOnClickListener(this);
         findViewById(R.id.pre).setOnClickListener(this);
         findViewById(R.id.next).setOnClickListener(this);
+    }
+
+    private String getUrl(YinXiangAudioNote note) {
+        String url = null;
+        if(note.getFilePath() != null && new File(note.getFilePath()).exists()) {
+            url = Uri.fromFile(new File(note.getFilePath())).toString();
+        } else {
+            if(note.getFrom() == 1) {
+                String path = Environment.getExternalStorageDirectory() + "/download/" + note.getTitle() + ".m4a";
+                if(!new File(path).exists()) {
+                    return null;
+                } else {
+                    url = Uri.fromFile(new File(path)).toString();
+                }
+            }
+        }
+        return url;
+    }
+
+    private void playAudio(String url) {
+        mMediaPlayer = MediaPlayUtils.getInstance().playAudio(url, new MediaPlayer.OnPreparedListener() {
+            @Override
+            public void onPrepared(MediaPlayer mp) {
+                mProgressBar.setMax(mp.getDuration());
+                durationTV.setText(TimeUtils.getTimeStr(mp.getDuration()));
+                mhandler.sendEmptyMessage(MSG_REFRESH_PROGRESS);
+            }
+        });
+        mMediaPlayer.setOnCompletionListener(new MediaPlayer.OnCompletionListener() {
+            @Override
+            public void onCompletion(MediaPlayer mp) {
+                if(isRandom) {
+                    randomPlay();
+                } else {
+                    mBottomView.setVisibility(View.GONE);
+                }
+            }
+        });
+    }
+
+    @Override
+    protected void onStart() {
+        super.onStart();
+        mMediaPlayer = MediaPlayUtils.getInstance().getmPlayer();
+        if(mMediaPlayer!=null && mMediaPlayer.isPlaying()) {
+            mProgressBar.setMax(mMediaPlayer.getDuration());
+            durationTV.setText(TimeUtils.getTimeStr(mMediaPlayer.getDuration()));
+            mhandler.sendEmptyMessage(MSG_REFRESH_PROGRESS);
+        } else {
+            durationTV.setText("");
+            progressTV.setText("");
+        }
+    }
+
+    @Override
+    protected void onPause() {
+        super.onPause();
+        PreferenceUtils.getInstance().saveYinXinagRandom(isRandom);
     }
 
     @Override
@@ -252,9 +305,21 @@ public class YinXiangAudio extends Activity implements View.OnClickListener {
                        mMediaPlayer.start();
                        mhandler.sendEmptyMessage(MSG_REFRESH_PROGRESS);
                    }
+                } else {
+                    randomPlay();
                 }
                 break;
         }
+    }
+
+    private void randomPlay() {
+        int pos = new Random().nextInt(mList.size());
+        String url = getUrl(mList.get(pos));
+        if(TextUtils.isEmpty(url)) {
+            randomPlay();
+            return;
+        }
+        playAudio(url);
     }
 
 

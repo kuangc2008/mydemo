@@ -48,4 +48,9 @@ public class MediaPlayUtils {
     public MediaPlayer getmPlayer() {
         return mPlayer;
     }
+
+    public void destory() {
+        mPlayer.release();
+        mPlayer = null;
+    }
 }
