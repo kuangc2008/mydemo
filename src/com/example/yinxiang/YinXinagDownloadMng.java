@@ -210,6 +210,9 @@ public class YinXinagDownloadMng {
                         String filePath = data.getString(AudioDBHelper.FILE_PATH_INDEX);
                         YinXiangAudioNote note = new YinXiangAudioNote(title, desc, new YinXiangFile(url), objectid, filePath);
                         note.setId(data.getInt(AudioDBHelper.ID_INDEX));
+                        note.setFrom(data.getInt(AudioDBHelper.FROM_INDEX));
+                        note.setYinxianguri(data.getString(AudioDBHelper.YINXIANGURI_INDEX));
+                        note.setType(data.getString(AudioDBHelper.TYPE_INDEX));
                         notes.add(note);
                     }
                     result.setResults(notes);
@@ -255,8 +258,11 @@ public class YinXinagDownloadMng {
                                         ContentValues cv = new ContentValues();
                                         cv.put(AudioDBHelper.OBJECT_ID, note.getObjectId());
                                         cv.put(AudioDBHelper.TITLE, note.getTitle());
-                                        cv.put(AudioDBHelper.URL, note.getUri().getUrl());
+                                        cv.put(AudioDBHelper.URL, note.getUri() == null ? "" : note.getUri().getUrl());
                                         cv.put(AudioDBHelper.DESC, note.getDescription());
+                                        cv.put(AudioDBHelper.FROM, note.getFrom());
+                                        cv.put(AudioDBHelper.YINXIANGURI, note.getYinxianguri());
+                                        cv.put(AudioDBHelper.TYPE, note.getType());
                                         Uri result = mContext.getContentResolver().insert(AudioProvider.CONTENT_URI, cv);
                                         String longid = result.getPathSegments().get(1);
                                         note.setId(Integer.parseInt(longid));

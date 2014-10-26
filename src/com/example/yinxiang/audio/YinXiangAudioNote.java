@@ -14,6 +14,34 @@ public class YinXiangAudioNote implements Parcelable{
 
     private String filePath;
     private int id;
+    private int from;
+    private String yinxianguri;
+    private String type;
+
+
+    public int getFrom() {
+        return from;
+    }
+
+    public void setFrom(int from) {
+        this.from = from;
+    }
+
+    public String getYinxianguri() {
+        return yinxianguri;
+    }
+
+    public void setYinxianguri(String yinxianguri) {
+        this.yinxianguri = yinxianguri;
+    }
+
+    public String getType() {
+        return type;
+    }
+
+    public void setType(String type) {
+        this.type = type;
+    }
 
     public YinXiangAudioNote(String title, String description, YinXiangFile uri, String objectId, String filePath) {
         this.title = title;

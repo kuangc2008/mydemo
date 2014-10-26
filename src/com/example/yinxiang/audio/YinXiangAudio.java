@@ -8,8 +8,10 @@ import android.media.MediaPlayer;
 import android.net.Uri;
 import android.os.AsyncTask;
 import android.os.Bundle;
+import android.os.Environment;
 import android.os.Message;
 import android.text.Layout;
+import android.text.TextUtils;
 import android.util.Log;
 import android.view.Gravity;
 import android.view.LayoutInflater;
@@ -82,7 +84,7 @@ public class YinXiangAudio extends Activity implements View.OnClickListener {
         switch (item.getItemId()) {
             case 0: {
                 for(YinXiangAudioNote note : mList) {
-                    if(note.getFilePath() == null) {
+                    if(note.getFilePath() == null && (note.getUri() != null &&  !TextUtils.isEmpty(note.getUri().getUrl()))) {
                         if(note.getFilePath() == null || !new File(note.getFilePath()).exists()) {
                             AsyncTask<YinXiangAudioNote, Void, Boolean> task = new AsyncTask<YinXiangAudioNote, Void, Boolean>() {
                                 @Override
@@ -173,7 +175,15 @@ public class YinXiangAudio extends Activity implements View.OnClickListener {
                 if(note.getFilePath() != null && new File(note.getFilePath()).exists()) {
                     url = Uri.fromFile(new File(note.getFilePath())).toString();
                 } else {
-                    url = note.getUri().getUrl();
+                    if(note.getFrom() == 1) {
+                        String path = Environment.getExternalStorageDirectory() + "/download/" + note.getTitle() + ".m4a";
+                        if(!new File(path).exists()) {
+                            startActivity(new Intent(Intent.ACTION_VIEW, Uri.parse(note.getYinxianguri())));
+                            return;
+                        } else {
+                            url = Uri.fromFile(new File(path)).toString();
+                        }
+                    }
                 }
                 mMediaPlayer = MediaPlayUtils.getInstance().playAudio(url, new MediaPlayer.OnPreparedListener() {
                     @Override
@@ -276,7 +286,7 @@ public class YinXiangAudio extends Activity implements View.OnClickListener {
                 convertView = mInfater.inflate(R.layout.two_line_icon, null);
                 mHolder.textLine1 = (TextView) convertView.findViewById(android.R.id.text1);
                 mHolder.textLine2 = (TextView) convertView.findViewById(android.R.id.text2);
-                mHolder.mImageView = (ImageView) convertView.findViewById(R.id.imageview);
+                mHolder.descTextView = (TextView) convertView.findViewById(R.id.desc);
                 convertView.setTag(mHolder);
             } else {
                 mHolder = (ViewHolder) convertView.getTag();
@@ -284,11 +294,20 @@ public class YinXiangAudio extends Activity implements View.OnClickListener {
 
             YinXiangAudioNote note = getItem(position);
             mHolder.textLine1.setText(note.getTitle().replace("$$", "\n"));
-            mHolder.textLine2.setText(note.getDescription().replace("$$", "\n"));
-            if(note.getFilePath() != null && new File(note.getFilePath()).exists()) {
-                mHolder.mImageView.setVisibility(View.VISIBLE);
+            if(!TextUtils.isEmpty(note.getDescription())) {
+                mHolder.textLine2.setText(note.getDescription().replace("$$", "\n"));
             } else {
-                mHolder.mImageView.setVisibility(View.GONE);
+                mHolder.textLine2.setText("");
+            }
+            if(note.getFilePath() != null && new File(note.getFilePath()).exists()) {
+                mHolder.descTextView.setText("离线");
+                mHolder.descTextView.setVisibility(View.VISIBLE);
+            } else {
+                mHolder.descTextView.setVisibility(View.GONE);
+                if(note.getFrom() == 1) {
+                    mHolder.descTextView.setVisibility(View.VISIBLE);
+                    mHolder.descTextView.setText("印象");
+                }
             }
             return convertView;
         }
@@ -297,7 +316,7 @@ public class YinXiangAudio extends Activity implements View.OnClickListener {
     private static class ViewHolder {
         TextView textLine1;
         TextView textLine2;
-        ImageView mImageView;
+        TextView descTextView;
     }
 
 
