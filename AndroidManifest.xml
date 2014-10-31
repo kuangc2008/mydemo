@@ -518,6 +518,16 @@
             android:name="com.example.yinxiang.audio.AudioProvider"
             android:authorities="com.example.yinxiang.audio"
             android:exported="false" />
+
+        <activity android:name="com.last201409.ReaderActivity"
+            android:windowSoftInputMode="adjustPan">
+            <intent-filter>
+                <action android:name="android.intent.action.VIEW" />
+                <category android:name="android.intent.category.DEFAULT" />
+                <data android:mimeType="text/*" android:scheme="file" />
+            </intent-filter>
+        </activity>
+
     </application>
 
 </manifest>
