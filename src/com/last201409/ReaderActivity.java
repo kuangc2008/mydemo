@@ -8,13 +8,13 @@ import android.text.Spanned;
 import android.text.TextUtils;
 import android.text.style.AbsoluteSizeSpan;
 import android.text.style.ForegroundColorSpan;
-import android.util.Log;
 import android.widget.TextView;
 
 import com.example.demo.R;
 import com.utils.FileUtils;
 
 import java.util.ArrayList;
+import java.util.LinkedList;
 import java.util.List;
 
 
@@ -23,10 +23,18 @@ public class ReaderActivity extends Activity {
     private TextView mFileTV;
     private SpannableString spannableString;
     private List<MyWord> words = new ArrayList<MyWord>();
+    private LinkedList<MyWord> oldWords = new LinkedList<MyWord>();
+    private List<MyWord> filed = new ArrayList<MyWord>();
+    private boolean isClass = false;
 
     private class MyWord {
-        int pos;
+        int endPos;
         String text;
+        WodeType type;
+    }
+
+    enum WodeType {
+        KEY, FUNCTIONS, FIELDS
     }
 
     @Override
@@ -41,55 +49,113 @@ public class ReaderActivity extends Activity {
         }
 
         String text = new String(FileUtils.fileToByteArray(filePath));
-        Log.w("kcc", "text->" + text);
-        colorText(text);
-    }
-
-
-
-    private void colorText(String text) {
-
         spannableString = new SpannableString(text);
-        initMyWord(text);
+        initKeyFiledMethod(text);
 
 //        for(MyWord word : words) {
 //            if(isKeyWord(word)) {
-//                colorKeyWord(word.text, word.pos);
+//                colorKeyWord(word.text, word.endPos);
 //            }
 //        }
         mFileTV.setText(spannableString);
     }
 
-    public void initMyWord(String text) {
+
+    public void initKeyFiledMethod(String text) {
         int len = text.length();
         StringBuilder sb = new StringBuilder();
         for(int i=0; i<len; i++ ) {
-//            if(sb == null || !TextUtils.isEmpty(sb.toString())) {
-//                sb =
-//            }
             char posChar = text.charAt(i);
             if(isNewSymbol(posChar)) {
-                if(!TextUtils.isEmpty(sb.toString())) {
+                MyWord lstWord = oldWords.peekLast();
+                if(!TextUtils.isEmpty(sb.toString()) && (lstWord == null || lstWord!=null && !lstWord.text.equals("{"))) {
                     MyWord word = new MyWord();
-                    word.pos = i;
+                    word.endPos = i;
                     word.text  = sb.toString();
                     words.add(word);
 
                     if(isKeyWord(word)) {
-                        colorKeyWord(word.text, word.pos);
+                        word.type = WodeType.KEY;
+                        colorKeyWord(word.text, word.endPos);
+                        if(word.text.equals("class") || word.text.equals("package")) {
+                            isClass = true;
+                        }
+                    } else {
+                        oldWords.add(word);
                     }
 
                 }
                 sb.delete(0, sb.toString().length());
+
+                if(posChar == '{') {
+                    if(isClass) {
+                        isClass = false;
+                        continue;
+                    }
+
+                    MyWord word = new MyWord();
+                    word.endPos = i;
+                    word.text  = "{";
+                    oldWords.add(word);
+                } else if(posChar == '}') {
+                    MyWord lstWord2 = oldWords.peekLast();
+                    if(lstWord2 != null &&  lstWord2.text.equals("{")) {
+                        oldWords.removeLast();
+                    }
+                }
+
+
+                if(posChar == '(') { //如果是括号，直接认为上一个是方法
+                    MyWord word = oldWords.peekLast();
+                    if(word == null || isZuoKuoHao()) {
+                        continue;
+                    }
+
+                    colorMethodWord(word.text, word.endPos);
+                    oldWords.clear();
+                } else if(posChar == ';') {  //;则认为是属性
+                    MyWord word = oldWords.peekLast();
+                    if(word == null || isZuoKuoHao())  {
+                        continue;
+                    }
+                    colorFieldWord(word.text, word.endPos);
+
+                    filed.add(word);
+                    oldWords.clear();
+                }
+
+
             } else {
                 sb.append(posChar);
             }
         }
     }
 
+    public boolean isZuoKuoHao() {
+        MyWord lstWord2 = oldWords.peekLast();
+        if(lstWord2 != null &&  lstWord2.text.equals("{")) {
+            return true;
+        }
+        return false;
+    }
+
+
+
+    private void colorFieldWord(String word, int lasPos) {
+        spannableString.setSpan(new ForegroundColorSpan(0xFFaa66cc), lasPos - word.length(), lasPos, Spanned.SPAN_INCLUSIVE_EXCLUSIVE);
+        int size = (int) (11 * getResources().getDisplayMetrics().scaledDensity);
+        spannableString.setSpan(new AbsoluteSizeSpan(size),lasPos - word.length(),lasPos, Spanned.SPAN_INCLUSIVE_EXCLUSIVE);
+    }
+
 
     private void colorKeyWord(String word, int lasPos) {
         spannableString.setSpan(new ForegroundColorSpan(0xFFff8800), lasPos - word.length(), lasPos, Spanned.SPAN_INCLUSIVE_EXCLUSIVE);
+        int size = (int) (11 * getResources().getDisplayMetrics().scaledDensity);
+        spannableString.setSpan(new AbsoluteSizeSpan(size),lasPos - word.length(),lasPos, Spanned.SPAN_INCLUSIVE_EXCLUSIVE);
+    }
+
+    private void colorMethodWord(String word, int lasPos) {
+        spannableString.setSpan(new ForegroundColorSpan(0xFFfeaa0c), lasPos - word.length(), lasPos, Spanned.SPAN_INCLUSIVE_EXCLUSIVE);
         int size = (int) (11 * getResources().getDisplayMetrics().scaledDensity);
         spannableString.setSpan(new AbsoluteSizeSpan(size),lasPos - word.length(),lasPos, Spanned.SPAN_INCLUSIVE_EXCLUSIVE);
     }
@@ -122,7 +188,8 @@ public class ReaderActivity extends Activity {
             '(',
             ')',
             '[',
-            ']'
+            ']',
+            ';'
     };
 
     public static final String[] KEY_WORD = new String[] {
