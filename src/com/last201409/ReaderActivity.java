@@ -8,6 +8,7 @@ import android.text.Spanned;
 import android.text.TextUtils;
 import android.text.style.AbsoluteSizeSpan;
 import android.text.style.ForegroundColorSpan;
+import android.util.Log;
 import android.widget.TextView;
 
 import com.example.demo.R;
@@ -22,8 +23,7 @@ public class ReaderActivity extends Activity {
     private String filePath;
     private TextView mFileTV;
     private SpannableString spannableString;
-    private List<MyWord> words = new ArrayList<MyWord>();
-    private LinkedList<MyWord> oldWords = new LinkedList<MyWord>();
+    private LinkedList<MyWord> words = new LinkedList<MyWord>();
     private List<MyWord> filed = new ArrayList<MyWord>();
     private boolean isClass = false;
 
@@ -50,7 +50,8 @@ public class ReaderActivity extends Activity {
 
         String text = new String(FileUtils.fileToByteArray(filePath));
         spannableString = new SpannableString(text);
-        initKeyFiledMethod(text);
+        initFiledMethod(text);
+        initKeyFiled(text);
 
 //        for(MyWord word : words) {
 //            if(isKeyWord(word)) {
@@ -61,13 +62,14 @@ public class ReaderActivity extends Activity {
     }
 
 
-    public void initKeyFiledMethod(String text) {
+    public void initKeyFiled(String text) {
         int len = text.length();
         StringBuilder sb = new StringBuilder();
+        words.clear();
         for(int i=0; i<len; i++ ) {
             char posChar = text.charAt(i);
             if(isNewSymbol(posChar)) {
-                MyWord lstWord = oldWords.peekLast();
+                MyWord lstWord = words.peekLast();
                 if(!TextUtils.isEmpty(sb.toString()) && (lstWord == null || lstWord!=null && !lstWord.text.equals("{"))) {
                     MyWord word = new MyWord();
                     word.endPos = i;
@@ -77,11 +79,54 @@ public class ReaderActivity extends Activity {
                     if(isKeyWord(word)) {
                         word.type = WodeType.KEY;
                         colorKeyWord(word.text, word.endPos);
+                    } else if(isFiledWord(word)) {
+                        colorFieldWord(word.text, word.endPos);
+                    }
+
+                }
+                sb.delete(0, sb.toString().length());
+
+                if(posChar == ';') {  //;则认为是属性
+                    words.clear();
+                }
+            } else {
+                sb.append(posChar);
+            }
+        }
+    }
+
+    private boolean isFiledWord(MyWord word) {
+        for(MyWord myWord : filed) {
+            if(myWord.text.equals(word.text)) {
+                return true;
+            }
+        }
+        return false;
+    }
+
+
+    public void initFiledMethod(String text) {
+        int len = text.length();
+        StringBuilder sb = new StringBuilder();
+        for(int i=0; i<len; i++ ) {
+            char posChar = text.charAt(i);
+            if(isNewSymbol(posChar)) {
+                MyWord lstWord = words.peekLast();
+                if(!TextUtils.isEmpty(sb.toString()) && (lstWord == null || lstWord!=null &&
+                        !lstWord.text.equals("{")
+                        && !lstWord.text.equals("=")
+                )) {
+                    MyWord word = new MyWord();
+                    word.endPos = i;
+                    word.text  = sb.toString();
+                    words.add(word);
+
+                    if(isKeyWord(word)) {
+//                        word.type = WodeType.KEY;
+//                        colorKeyWord(word.text, word.endPos);
                         if(word.text.equals("class") || word.text.equals("package")) {
                             isClass = true;
                         }
-                    } else {
-                        oldWords.add(word);
                     }
 
                 }
@@ -96,32 +141,41 @@ public class ReaderActivity extends Activity {
                     MyWord word = new MyWord();
                     word.endPos = i;
                     word.text  = "{";
-                    oldWords.add(word);
+                    words.add(word);
                 } else if(posChar == '}') {
-                    MyWord lstWord2 = oldWords.peekLast();
+                    MyWord lstWord2 = words.peekLast();
                     if(lstWord2 != null &&  lstWord2.text.equals("{")) {
-                        oldWords.removeLast();
+                        words.removeLast();
                     }
+                } else if(posChar == '=') {
+                    MyWord word = new MyWord();
+                    word.endPos = i;
+                    word.text  = "=";
+                    words.add(word);
                 }
 
+                MyWord word = words.peekLast();
+                if(word == null || isZuoKuoHao()) {
+                    continue;
+                }
 
                 if(posChar == '(') { //如果是括号，直接认为上一个是方法
-                    MyWord word = oldWords.peekLast();
-                    if(word == null || isZuoKuoHao()) {
-                        continue;
-                    }
-
                     colorMethodWord(word.text, word.endPos);
-                    oldWords.clear();
-                } else if(posChar == ';') {  //;则认为是属性
-                    MyWord word = oldWords.peekLast();
-                    if(word == null || isZuoKuoHao())  {
-                        continue;
-                    }
-                    colorFieldWord(word.text, word.endPos);
 
-                    filed.add(word);
-                    oldWords.clear();
+                } else if(posChar == ';') {  //;则认为是属性
+                    MyWord word1 = words.pollLast();
+                    MyWord word2 = words.pollLast();
+                    if(word2 == null || word2.text.equals("package") || word2.text.equals("import")) {
+                    } else {
+                        if(word.text.equals("=")) {
+                            colorFieldWord(word2.text, word2.endPos);
+                        } else {
+                            colorFieldWord(word.text, word.endPos);
+                            filed.add(word);
+                        }
+                    }
+
+                    words.clear();
                 }
 
 
@@ -132,7 +186,7 @@ public class ReaderActivity extends Activity {
     }
 
     public boolean isZuoKuoHao() {
-        MyWord lstWord2 = oldWords.peekLast();
+        MyWord lstWord2 = words.peekLast();
         if(lstWord2 != null &&  lstWord2.text.equals("{")) {
             return true;
         }
