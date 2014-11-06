@@ -32,7 +32,7 @@ public class FilePathHelper {
             if(filePath.isDirectory()) {
                 filePath.delete();
             }
-            int i =0;
+            int i = 0;
             if(!filePath.exists()) {
                 try {
                     filePath.createNewFile();

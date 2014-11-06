@@ -92,6 +92,28 @@ public class YinXiangAudio extends Activity implements View.OnClickListener {
                 for(YinXiangAudioNote note : mList) {
                     if(note.getFilePath() == null && (note.getUri() != null &&  !TextUtils.isEmpty(note.getUri().getUrl()))) {
                         if(note.getFilePath() == null || !new File(note.getFilePath()).exists()) {
+                            //先看看文件是否存在
+                            try {
+                                Uri downloaduri = Uri.parse(note.getUri().getUrl());
+                                final String name = downloaduri.getLastPathSegment();
+                                String savePath = FilePathHelper.getAudioPath(name);
+                                if (new File(savePath).exists()) {
+                                    Uri uri = ContentUris.withAppendedId(AudioProvider.CONTENT_URI, note.getId());
+                                    ContentValues values = new ContentValues();
+                                    values.put(AudioDBHelper.FILE_PATH, savePath);
+                                    int count = getBaseContext().getContentResolver().update(uri, values, null, null);
+                                    note.setFilePath(savePath);
+                                    continue;
+                                }
+                            } catch (Exception e) {
+                                Log.w("kcc", "hehe", e);
+                            }
+
+                            if(note.getFrom() == 1) {
+                                continue;
+                            }
+
+                            //下载
                             AsyncTask<YinXiangAudioNote, Void, Boolean> task = new AsyncTask<YinXiangAudioNote, Void, Boolean>() {
                                 @Override
                                 protected Boolean doInBackground(YinXiangAudioNote... params) {
@@ -189,8 +211,10 @@ public class YinXiangAudio extends Activity implements View.OnClickListener {
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
                 YinXiangAudioNote note = mAdapter.getItem(position);
                 String url = getUrl(note);
-                if(url == null && note.getFrom() == 1) {
-                    startActivity(new Intent(Intent.ACTION_VIEW, Uri.parse(note.getYinxianguri())));
+                if(url == null) {
+                    if(note.getFrom() == 1) {
+                        startActivity(new Intent(Intent.ACTION_VIEW, Uri.parse(note.getYinxianguri())));
+                    }
                     return;
                 }
                 playAudio(url);
@@ -210,11 +234,14 @@ public class YinXiangAudio extends Activity implements View.OnClickListener {
             if(note.getFrom() == 1) {
                 String path = Environment.getExternalStorageDirectory() + "/download/" + note.getTitle() + ".m4a";
                 if(!new File(path).exists()) {
-                    return null;
-                } else {
-                    url = Uri.fromFile(new File(path)).toString();
+                    path = Environment.getExternalStorageDirectory() + "/download/" + note.getTitle() + ".mp3";
+                    if(!new File(path).exists()) {
+                        return null;
+                    }
                 }
+                url = Uri.fromFile(new File(path)).toString();
             }
+
         }
         return url;
     }
