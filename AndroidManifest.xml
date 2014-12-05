@@ -534,7 +534,21 @@
                 <action android:name="com.example.demo.demoaction"/>
             </intent-filter>
         </activity>
+        <activity android:name="com.last201409.swipeMenu.ViewMeasureActivity"
+            android:label="winner/ViewMeasure"
+            android:windowSoftInputMode="adjustPan">
+            <intent-filter>
+                <action android:name="com.example.demo.demoaction"/>
+            </intent-filter>
+        </activity>
 
+        <activity android:name="com.last201409.swipeMenu.WebViewActivity"
+            android:label="winner/WebViewActivity"
+            android:windowSoftInputMode="adjustPan">
+            <intent-filter>
+                <action android:name="com.example.demo.demoaction"/>
+            </intent-filter>
+        </activity>
 
     </application>
 

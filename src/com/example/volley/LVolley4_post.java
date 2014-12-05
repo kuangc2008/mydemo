@@ -8,6 +8,7 @@ import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.LinearLayout;
 
+import com.android.volley.AuthFailureError;
 import com.android.volley.Request;
 import com.android.volley.RequestQueue;
 import com.android.volley.Response;
@@ -19,6 +20,9 @@ import com.last201409.UrlUtils;
 
 import org.json.JSONException;
 import org.json.JSONObject;
+
+import java.util.HashMap;
+import java.util.Map;
 
 public class LVolley4_post extends Activity implements View.OnClickListener {
     private RequestQueue mQueue = null;
@@ -45,7 +49,8 @@ public class LVolley4_post extends Activity implements View.OnClickListener {
     @Override
     public void onClick(View v) {
         if(v.getTag().equals("1")) {
-            uploadData1();
+//            uploadData1();
+            upload2();
         } else if(v.getTag().equals("2")) {
 
         } else if(v.getTag().equals("3")) {
@@ -58,8 +63,8 @@ public class LVolley4_post extends Activity implements View.OnClickListener {
     private void uploadData1() {
         JSONObject js = new JSONObject();
         try {
-            js.put("nibu", "zhenniubi");
-            js.put("gaga", 2);
+            js.put("nibu", "2121212");
+            js.put("gaga", 3);
         } catch (JSONException e) {
             e.printStackTrace();
         }
@@ -77,6 +82,37 @@ public class LVolley4_post extends Activity implements View.OnClickListener {
         });
         jor.setHeader("X-AVOSCloud-Application-Id", "418dgirlkcy5pqph1tiuts5pxhdhjz4s3rft986mvevo73hi");
         jor.setHeader("X-AVOSCloud-Application-Key", "r7cj4qp0t84ak240hdr9j62uqw6cv5qcl7og753c5lcp3pyp");
+        mQueue.add(jor);
+    }
+
+
+    private void upload2() {
+        JSONObject js = new JSONObject();
+        try {
+            js.put("nibu", "zhenniubi");
+            js.put("gaga", 4);
+        } catch (JSONException e) {
+            e.printStackTrace();
+        }
+        JsonObjectRequest jor = new JsonObjectRequest(Request.Method.POST, "https://cn.avoscloud.com/1.1/classes/Hehe", js, new Response.Listener<JSONObject>() {
+            @Override
+            public void onResponse(JSONObject response) {
+                Log.w("kcc", "onResponse" );
+            }
+        }, new Response.ErrorListener() {
+            @Override
+            public void onErrorResponse(VolleyError error) {
+                Log.w("kcc", "error", error);
+            }
+        }){
+            @Override
+            public Map<String, String> getHeaders() throws AuthFailureError {
+                HashMap<String,String> map = new HashMap<String, String>();
+                map.put("X-AVOSCloud-Application-Id", "418dgirlkcy5pqph1tiuts5pxhdhjz4s3rft986mvevo73hi");
+                map.put("X-AVOSCloud-Application-Key", "r7cj4qp0t84ak240hdr9j62uqw6cv5qcl7og753c5lcp3pyp");
+                return map;
+            }
+        };
         mQueue.add(jor);
     }
 }
