@@ -550,6 +550,21 @@
             </intent-filter>
         </activity>
 
+        <activity android:name="com.last201409.AecEncodeActivity"
+            android:label="winner/AecEncode"
+            android:windowSoftInputMode="adjustPan">
+            <intent-filter>
+                <action android:name="com.example.demo.demoaction"/>
+            </intent-filter>
+        </activity>
+
+        <activity android:name="com.last201409.HandlerTestActivity"
+            android:label="winner/handlerTest"
+            android:windowSoftInputMode="adjustPan">
+            <intent-filter>
+                <action android:name="com.example.demo.demoaction"/>
+            </intent-filter>
+        </activity>
     </application>
 
 </manifest>
