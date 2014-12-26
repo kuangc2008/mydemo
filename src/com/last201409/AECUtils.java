@@ -1,5 +1,6 @@
 package com.last201409;
 
+import java.io.ByteArrayOutputStream;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
@@ -23,17 +24,16 @@ import javax.crypto.spec.SecretKeySpec;
  * Created by kuangcheng on 2014/12/8.
  */
 public class AECUtils {
+    private static final String KEY_ALGORITHM = "AES";
+    private static final String DEFAULT_CIPHER_ALGORITHM = "AES/ECB/PKCS5Padding";
 
-    public Cipher initAESCipher(String skey, int cipherMode) {
-        KeyGenerator keyGenerator = null;
+    public static final String KEY = "qIhU360_Qihoo";
+
+    private static Cipher initAESCipher(String skey, int cipherMode) {
         Cipher cipher = null;
         try {
-            keyGenerator = KeyGenerator.getInstance("AES");
-            keyGenerator.init(128, new SecureRandom(skey.getBytes()));
-            SecretKey secretKey = keyGenerator.generateKey();
-            byte[] codeFormat = secretKey.getEncoded();
-            SecretKeySpec key = new SecretKeySpec(codeFormat, "AES");
-            cipher = Cipher.getInstance("AES");
+            SecretKeySpec key = new SecretKeySpec("aaaa".getBytes(), KEY_ALGORITHM);
+            cipher = Cipher.getInstance(DEFAULT_CIPHER_ALGORITHM);
             //初始化
             cipher.init(cipherMode, key);
         } catch (NoSuchAlgorithmException e) {
@@ -50,16 +50,15 @@ public class AECUtils {
     /**
      * 对文件进行AES加密
      */
-    public File encryptFile(File sourceFile,String fileType, String sKey){
+    public static File encryptFile(File sourceFile,String desFilePath){
         //新建临时加密文件
         File encrypfile = null;
         InputStream inputStream = null;
         OutputStream outputStream = null;
         try {
             inputStream = new FileInputStream(sourceFile);
-            encrypfile = File.createTempFile(sourceFile.getName(), fileType);
-            outputStream = new FileOutputStream(encrypfile);
-            Cipher cipher = initAESCipher(sKey,Cipher.ENCRYPT_MODE);
+            outputStream = new FileOutputStream(desFilePath);
+            Cipher cipher = initAESCipher(KEY, Cipher.ENCRYPT_MODE);
             //以加密流写入文件
             CipherInputStream cipherInputStream = new CipherInputStream(inputStream, cipher);
             byte[] cache = new byte[1024];
@@ -89,20 +88,100 @@ public class AECUtils {
     }
 
 
+
+    /**
+     * 对文件进行AES加密
+     */
+    public static File encryptFile(InputStream inputStream,String desFilePath){
+        //新建临时加密文件
+        File encrypfile = null;
+        OutputStream outputStream = null;
+        try {
+            outputStream = new FileOutputStream(desFilePath);
+            Cipher cipher = initAESCipher(KEY, Cipher.ENCRYPT_MODE);
+            //以加密流写入文件
+            CipherInputStream cipherInputStream = new CipherInputStream(inputStream, cipher);
+            byte[] cache = new byte[1024];
+            int nRead = 0;
+            while ((nRead = cipherInputStream.read(cache)) != -1) {
+                outputStream.write(cache, 0, nRead);
+            }
+            cipherInputStream.close();
+        }  catch (FileNotFoundException e) {
+            e.printStackTrace();  //To change body of catch statement use File | Settings | File Templates.
+        }  catch (IOException e) {
+            e.printStackTrace();  //To change body of catch statement use File | Settings | File Templates.
+        } finally {
+            try {
+                inputStream.close();
+            } catch (IOException e) {
+                e.printStackTrace();  //To change body of catch statement use File | Settings | File Templates.
+            }
+            try {
+                outputStream.close();
+            } catch (IOException e) {
+                e.printStackTrace();  //To change body of catch statement use File | Settings | File Templates.
+            }
+        }
+        return encrypfile;
+    }
+
+
+
+
+
+//    /**
+//     * AES方式解密文件
+//     * @param sourceFile
+//     * @return
+//     */
+//    public static File decryptFile(File sourceFile,String fileType, String sKey){
+//        File decryptFile = null;
+//        InputStream inputStream = null;
+//        OutputStream outputStream = null;
+//        try {
+//            decryptFile = File.createTempFile(sourceFile.getName(), fileType);
+//            Cipher cipher = initAESCipher(sKey,Cipher.DECRYPT_MODE);
+//            inputStream = new FileInputStream(sourceFile);
+//            outputStream = new FileOutputStream(decryptFile);
+//            CipherOutputStream cipherOutputStream = new CipherOutputStream(outputStream, cipher);
+//            byte [] buffer = new byte [1024];
+//            int r;
+//            while ((r = inputStream.read(buffer)) >= 0) {
+//                cipherOutputStream.write(buffer, 0, r);
+//            }
+//            cipherOutputStream.close();
+//        } catch (IOException e) {
+//            e.printStackTrace();  //To change body of catch statement use File | Settings | File Templates.
+//        }finally {
+//            try {
+//                inputStream.close();
+//            } catch (IOException e) {
+//                e.printStackTrace();  //To change body of catch statement use File | Settings | File Templates.
+//            }
+//            try {
+//                outputStream.close();
+//            } catch (IOException e) {
+//                e.printStackTrace();  //To change body of catch statement use File | Settings | File Templates.
+//            }
+//        }
+//        return decryptFile;
+//    }
+
+
     /**
      * AES方式解密文件
      * @param sourceFile
      * @return
      */
-    public File decryptFile(File sourceFile,String fileType,String sKey){
+    public static String decryptFile(File sourceFile){
         File decryptFile = null;
         InputStream inputStream = null;
-        OutputStream outputStream = null;
+        ByteArrayOutputStream outputStream = null;
         try {
-            decryptFile = File.createTempFile(sourceFile.getName(),fileType);
-            Cipher cipher = initAESCipher(sKey,Cipher.DECRYPT_MODE);
+            Cipher cipher = initAESCipher(KEY,Cipher.DECRYPT_MODE);
             inputStream = new FileInputStream(sourceFile);
-            outputStream = new FileOutputStream(decryptFile);
+            outputStream = new ByteArrayOutputStream();
             CipherOutputStream cipherOutputStream = new CipherOutputStream(outputStream, cipher);
             byte [] buffer = new byte [1024];
             int r;
@@ -124,6 +203,6 @@ public class AECUtils {
                 e.printStackTrace();  //To change body of catch statement use File | Settings | File Templates.
             }
         }
-        return decryptFile;
+        return outputStream.toString();
     }
 }
