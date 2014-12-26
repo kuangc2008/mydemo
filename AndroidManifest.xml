@@ -565,6 +565,14 @@
                 <action android:name="com.example.demo.demoaction"/>
             </intent-filter>
         </activity>
+
+        <activity android:name="com.sheep.start_study.MulteItemTypeListViewActivity"
+            android:label="sheep/start/listview"
+            android:windowSoftInputMode="adjustPan">
+            <intent-filter>
+                <action android:name="com.example.demo.demoaction"/>
+            </intent-filter>
+        </activity>
     </application>
 
 </manifest>
