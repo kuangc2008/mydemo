@@ -9,6 +9,7 @@ import java.io.InputStream;
 import java.io.OutputStream;
 import java.security.Key;
 import java.security.NoSuchAlgorithmException;
+import java.util.Calendar;
 
 import javax.crypto.Cipher;
 import javax.crypto.CipherInputStream;
@@ -192,6 +193,13 @@ public class AECUtils2 {
     public static void main(String[] args) throws Exception {
         byte[] key = initSecretKey();
         System.out.println("key："+showByteArray(key));
+
+        Calendar c = Calendar.getInstance();
+        c.setTimeInMillis(1419925694040L);
+        System.out.println(c.getTime());
+
+
+
 
         Key k = toKey(key);
 

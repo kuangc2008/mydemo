@@ -573,6 +573,14 @@
                 <action android:name="com.example.demo.demoaction"/>
             </intent-filter>
         </activity>
+        <activity android:name="com.sheep.start_study.ImageTest"
+            android:label="ImageView"
+            android:windowSoftInputMode="adjustPan">
+            <intent-filter>
+                <action android:name="com.example.demo.demoaction"/>
+            </intent-filter>
+        </activity>
+
     </application>
 
 </manifest>

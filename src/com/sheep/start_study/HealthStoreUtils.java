@@ -6,80 +6,128 @@ package com.sheep.start_study;
 public class HealthStoreUtils {
 
     public static void main(String[] args) {
+        //起手
+        qishou();
+
+        twoAnim();
+
+        //3费
+        threeAnim();
+
+        //4费
+        forAnim();
+        
         //5费
         fiveAnim();
 
         //6费
-        sixAnim(1);
+        sixAnim();
 
         //抽牌
         choupai();
+        
+        //过牌与大生物
 
+        
+    }
 
-        int numberPai = 5;
-        float total = 1;
-        for(int i=0; i<numberPai; i++) {
-            total = total * (27 - i);
-            total = total/(i+1);
+    private static void twoAnim() {
+        for(int i=0; i<10; i++) {
+            float percent1 = (float) getGoalSum(30, i, 5, 1) / getTotalSum(30, 5);
+            float percent2 = (float) getGoalSum(30, i, 5, 2) / getTotalSum(30, 5);
+            float percent3 = (float) getGoalSum(30, i, 5, 3) / getTotalSum(30, 5);
+            System.out.println("2费生物，在2费回合1-2-3张--"+ i + "  percent->" + (percent1 + percent2 +percent3));
         }
-        float total2 = (float)27 * 26 * 25 * 24 * 23/(5 * 4 * 3 * 2);
-        System.out.print(" " +  total + "  " + total2);
-        System.out.println();
     }
 
-
-    private static void choupai() {
-//        int total = 27 * 26 * 25 * 24 * 23;
-//
-//
-//        for(int i=0; i<12; i++) {
-//            int noFive = (27 - i) * (26 - i) * (25 - i) * (24 -i) *(23 -i);
-//            float noGaiLv = (float)noFive / total;
-//            System.out.println("有" + i + "个5费生物，则在5费时抽取到至少一个5费的概率是：" + (1 - noGaiLv));
-//        }
+    private static void threeAnim() {
+        for(int i=0; i<10; i++) {
+            float percent1 = (float) getGoalSum(30, i, 6, 1) / getTotalSum(30, 6);
+            float percent2 = (float) getGoalSum(30, i, 6, 2) / getTotalSum(30, 6);
+            System.out.println("3费生物，在3费回合1-2张--"+ i + "  percent->" + (percent1 + percent2));
+        }
     }
 
-    private static void fiveAnim() {
-        float total = (float)27 * 26 * 25 * 24 * 23/(5 * 4 * 3 * 2);
+    private static void forAnim() {
+        for(int i=0; i<10; i++) {
+            float percent1 = (float) getGoalSum(30, i, 8, 1) / getTotalSum(30, 8);
+            float percent2 = (float) getGoalSum(30, i, 8, 2) / getTotalSum(30, 8);
+            System.out.println("4费生物，在5费回合1-2张--"+ i + "  percent->" + (percent1 + percent2));
+        }
+    }
+
+    private static void qishou() {
+        //222， 223，233， 234
+        System.out.println("2费");
+        int numberPai = 3;
+        for(int goalTotalNumber=0; goalTotalNumber<10; goalTotalNumber++) {
+//            for(int goalNumber=0; goalNumber<=3; goalNumber++) {
+                int internalGoalNum = 0;
+                float percent0 = (float) getGoalSum(30, goalTotalNumber, numberPai, internalGoalNum) / getTotalSum(30, numberPai);
+                internalGoalNum = 1;
+                float percent1 = (float) getGoalSum(30, goalTotalNumber, numberPai, internalGoalNum) / getTotalSum(30, numberPai);
+                internalGoalNum = 2;
+                float percent2 = (float) getGoalSum(30, goalTotalNumber, numberPai, internalGoalNum) / getTotalSum(30, numberPai);
+            internalGoalNum = 3;
+            float percent3 = (float) getGoalSum(30, goalTotalNumber, numberPai, internalGoalNum) / getTotalSum(30, numberPai);
+            System.out.println( goalTotalNumber + " --10》" + percent1 + "  01->" + percent0 * percent1);
+            System.out.println( goalTotalNumber + " --》" + percent2 + "  1 1->" + percent1 * (float) getGoalSum(29, goalTotalNumber-1, 2, internalGoalNum-1) / getTotalSum(29, 2)
+                        +"   02-->" + percent0 * percent2);
+            System.out.println( goalTotalNumber + "-->" + (percent1 + percent0 * percent1) + "  2-->" + (percent2 + percent1 *(float) getGoalSum(29, goalTotalNumber-1, 2, internalGoalNum-1) / getTotalSum(29, 2) + percent0 * percent2)
+                    + "  total-->" +  (percent1 + percent0 * percent1 + percent2 + percent1 *(float) getGoalSum(29, goalTotalNumber-1, 2, internalGoalNum-1) / getTotalSum(29, 2) + percent0 * percent2) );
 
 
-        for(int i=0; i<12; i++) {
-            float noFive = (float)(27 - i) * (26 - i) * (25 - i) * (24 -i) *(23 -i) / ( 5 * 4*3*2*1);
-            float noGaiLv = (float)noFive / total;
-            System.out.print("有" + i + "个5费生物，则在5费时抽取到至少一个5费的概率是：" + (1 - noGaiLv));
-            float _1Five = i *(float) (27- i) *(26-i) * (25 -i) *(24-i) / (4 * 3*2*1);
-            float _2Five = i*(i-1) * (27-i) * (26-i) *(25-i) / (3 * 2 * 1 * 2);
-            float _3Five = i*(i-1)*(i-2) * (27-i) * (26-i)/ ( 2 * 1 * 3*2);
-            float _4Five = i*(i-1) *(i-2)*(i-3) *(float) (27-i)  / (4 * 3 *2 * 1);
-            float _5Five = (float)i*(i-1) *(i-2)*(i-3)*(i-4) / (5 * 4 * 3 * 2);
+            System.out.println( goalTotalNumber + "摸牌-->" + (percent1 + percent0 * percent1) + "  2-->" + (percent2 + percent1 *(float) getGoalSum(29, goalTotalNumber-1, 2, internalGoalNum-1) / getTotalSum(29, 2) + percent0 * percent2)
+                    + "  total-->" +  (percent1 + percent0 * percent1 + percent2 + percent1 *(float) getGoalSum(29, goalTotalNumber-1, 2, internalGoalNum-1) / getTotalSum(29, 2) + percent0 * percent2) );
 
-            System.out.print(" ，其中：  1：" + (_1Five/total) + "  2:" + (_2Five/total) + " 3;" + (_3Five/total)
-                    +"  4:" + (_4Five/total) +" 5:" + (_5Five/total));
 
+
+//                internalGoalNum = 3;
+//                float percent3 = (float) getGoalSum(30, goalTotalNumber, numberPai, internalGoalNum) / getTotalSum(30, numberPai);
+
+//                System.out.println("" + goalNumber + " in " + goalTotalNumber + " --》" + percent);
+//            }
             System.out.println();
         }
     }
 
 
+    private static int getGoalSum(int totalNumber, int goalTotalNumber, int numberPai, int goalNumber) {
+        return getTotalSum(goalTotalNumber, goalNumber) * getTotalSum(totalNumber - goalTotalNumber, numberPai - goalNumber);
+    }
 
-    private static void sixAnim(int numberPai) {
-//        float total = (float)27 * 26 * 25 * 24 * 23/(5 * 4 * 3 * 2);
-//
-//
-//        for(int i=0; i<12; i++) {
-//            float noFive = (float)(27 - i) * (26 - i) * (25 - i) * (24 -i) *(23 -i) / ( 5 * 4*3*2*1);
-//            float noGaiLv = (float)noFive / total;
-//            System.out.print("有" + i + "个5费生物，则在5费时抽取到至少一个5费的概率是：" + (1 - noGaiLv));
-//            float _1Five = i *(float) (27- i) *(26-i) * (25 -i) *(24-i) / (4 * 3*2*1);
-//            float _2Five = i*(i-1) * (27-i) * (26-i) *(25-i) / (3 * 2 * 1 * 2);
-//            float _3Five = i*(i-1)*(i-2) * (27-i) * (26-i)/ ( 2 * 1 * 3*2);
-//            float _4Five = i*(i-1) *(i-2)*(i-3) *(float) (27-i)  / (4 * 3 *2 * 1);
-//            float _5Five = (float)i*(i-1) *(i-2)*(i-3)*(i-4) / (5 * 4 * 3 * 2);
-//
-//            System.out.print(" ，其中：  1：" + (_1Five/total) + "  2:" + (_2Five/total) + " 3;" + (_3Five/total)
-//                    +"  4:" + (_4Five/total) +" 5:" + (_5Five/total));
-//
-//            System.out.println();
-//        }
+    private static int getTotalSum(int totalNumber, int numberPai) {
+        float result = 1;
+        for(int i=0; i<numberPai; i++) {
+            result = result * (totalNumber - i);
+            result = result/(i+1);
+        }
+        return (int)result;
+    }
+
+
+    private static void choupai() {
+        for(int i=0; i<10; i++) {
+            float percent1 = (float) getGoalSum(21, i, 4, 1) / getTotalSum(21, 4);
+            float percent2 = (float) getGoalSum(21, i, 4, 2) / getTotalSum(21, 4);
+            System.out.println("8费以上，接下来5张，想拿到过牌或大生活1-4张的概率为"+ i + "  percent->" + (percent1 + percent2  ));
+        }
+    }
+
+    private static void fiveAnim() {
+        for(int i=0; i<10; i++) {
+            float percent1 = (float) getGoalSum(30, i, 9, 1) / getTotalSum(30, 9);
+            float percent2 = (float) getGoalSum(30, i, 9, 2) / getTotalSum(30, 9);
+            System.out.println("5费生物，在6费回合1-2张--"+ i + "  percent->" + (percent1 + percent2));
+        }
+    }
+
+
+
+    private static void sixAnim() {
+        for(int i=0; i<10; i++) {
+            float percent1 = (float) getGoalSum(30, i, 9, 1) / getTotalSum(30, 9);
+            System.out.println("6费生物，在6费回合1张--"+ i + "  percent->" + (percent1));
+        }
     }
 }
