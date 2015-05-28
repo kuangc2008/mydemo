@@ -1,6 +1,7 @@
 package com.sheep.start_study;
 
 import android.app.Activity;
+import android.net.Uri;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
@@ -11,6 +12,7 @@ import com.example.demo.R;
 
 
 public class ImageTest extends Activity {
+    public static final String CONTEXT_URI = "context://com.qihoo.browser/bookmark";
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -31,6 +33,15 @@ public class ImageTest extends Activity {
                 iv.setImageResource(R.drawable.background);
             }
         });
+
+
+        Uri uri = Uri.parse(CONTEXT_URI);
+        Log.i("kcc", "uri->" + uri.toString());
+
+
+        uri = uri.buildUpon().appendQueryParameter("aaa", "true").build();
+        Log.i("kcc", "uri->" + uri.toString());
+
     }
 
 

@@ -1,34 +1,65 @@
 package com.sheep.start_study;
 
+import android.util.Log;
+
+import java.io.UnsupportedEncodingException;
+
 /**
  * Created by kuangcheng on 2014/12/29.
  */
 public class HealthStoreUtils {
 
     public static void main(String[] args) {
-        //起手
-        qishou();
+//        //起手
+//        qishou();
+//
+//        twoAnim();
+//
+//        //3费
+//        threeAnim();
+//
+//        //4费
+//        forAnim();
+//
+//        //5费
+//        fiveAnim();
+//
+//        //6费
+//        sixAnim();
+//
+//        //抽牌
+//        choupai();
+//
+//        //过牌与大生物
 
-        twoAnim();
 
-        //3费
-        threeAnim();
 
-        //4费
-        forAnim();
-        
-        //5费
-        fiveAnim();
+//        byte[] bytes = "&nbsp;".getBytes();
+//
+//        for(byte b : bytes) {
+//            System.out.println("b is " + b + "  " + Integer.toHexString(b));
+//        }
+//
+//        char c = 0x0a;
+//        System.out.println(" c is" + c +"xxx");
+//
+//        try {
+//            bytes = "这个".getBytes("UTF-8");
+//        } catch (UnsupportedEncodingException e) {
+//        }
+//        for(byte b : bytes) {
+//            System.out.println("c is " + b + "  " + Integer.toHexString(b));
+//        }
 
-        //6费
-        sixAnim();
+        //
+       // System.out.println("monkey is " );
+       // System.out.println((87+5) + (73+5) + (73+5) + (71+5) + 26);
 
-        //抽牌
-        choupai();
-        
-        //过牌与大生物
+        System.out.println(("1->" + (86+93+10)));
+        System.out.println(("2->" + (71 + 83+ 86 + 10)));
 
-        
+        System.out.println("total->" + (86+93+71+83+86+20));
+
     }
 
     private static void twoAnim() {
